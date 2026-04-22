@@ -67,7 +67,7 @@ const colorScale = (value) => {
 // -----------------------------
 // 3. LOAD DATA
 // -----------------------------
-fetch("helsinki_population.geojson")
+fetch("./helsinki_population.geojson")
 .then(res => res.json())
 .then(data => {
     geoData = data;
