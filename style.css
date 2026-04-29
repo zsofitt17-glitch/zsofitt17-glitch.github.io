@@ -1,4 +1,3 @@
-
 :root {
     --bg: #f7f7f4;
     --surface: #ffffff;
@@ -281,3 +280,27 @@ footer {
     }
 }
 
+
+.visualization-frame {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 16px;
+    box-shadow: var(--shadow);
+}
+
+.map-container {
+    height: 75vh;
+    min-height: 500px;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+}
+
+.controls {
+    margin-bottom: 16px;
+    padding: 16px;
+    background: var(--surface-muted);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+}
