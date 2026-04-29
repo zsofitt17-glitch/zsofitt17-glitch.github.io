@@ -1,155 +1,491 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zsófia Tasnádi-Tulogdi | Thesis Portfolio</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Thesis Portfolio | Geospatial Data Visualization</title>
 
     <style>
-        .back-button {
-            position: absolute;
-            top: 15px;
-            left: 15px;
-            padding: 8px 14px;
-            background-color: #38bdf8;
-            color: #0f172a;
-            text-decoration: none;
-            border-radius: 6px;
-            font-weight: bold;
-            font-family: Arial, sans-serif;
+        :root {
+            --bg: #f7f7f4;
+            --surface: #ffffff;
+            --surface-muted: #f0f0eb;
+            --text: #1f2933;
+            --text-muted: #5f6c72;
+            --border: #d8d8d2;
+            --accent: #3f5f6f;
+            --accent-dark: #2f4854;
+            --shadow: 0 8px 24px rgba(31, 41, 51, 0.08);
         }
-        
-        .back-button:hover {
-            background-color: #0ea5e9;
+
+        * {
+            box-sizing: border-box;
         }
-        
+
+        html {
+            scroll-behavior: smooth;
+        }
+
         body {
             margin: 0;
             font-family: Arial, Helvetica, sans-serif;
-            background-color: #0f172a;
-            color: #e2e8f0;
-        }
-
-        header {
-            padding: 60px 20px;
-            text-align: center;
-            background: linear-gradient(135deg, #1e293b, #020617);
-        }
-
-        h1 {
-            margin: 0;
-            font-size: 2.5em;
-        }
-
-        h2 {
-            color: #38bdf8;
-        }
-
-        p {
-            max-width: 700px;
-            margin: 10px auto;
+            background: var(--bg);
+            color: var(--text);
             line-height: 1.6;
         }
 
+        a {
+            color: var(--accent);
+        }
+
+        .page {
+            max-width: 1120px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        header {
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 24px;
+            padding: 18px 0;
+        }
+
+        .site-title {
+            font-size: 0.95rem;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            color: var(--accent-dark);
+            text-decoration: none;
+        }
+
         nav {
-            margin-top: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
         }
 
         nav a {
-            color: #38bdf8;
-            margin: 0 15px;
+            font-size: 0.95rem;
+            color: var(--text-muted);
             text-decoration: none;
-            font-weight: bold;
+            font-weight: 600;
         }
 
         nav a:hover {
+            color: var(--accent-dark);
             text-decoration: underline;
         }
 
+        .hero {
+            padding: 72px 0 64px;
+        }
+
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 1.4fr 0.8fr;
+            gap: 40px;
+            align-items: start;
+        }
+
+        h1 {
+            margin: 0 0 18px;
+            font-size: clamp(2.1rem, 5vw, 4rem);
+            line-height: 1.1;
+            color: var(--text);
+        }
+
+        .subtitle {
+            max-width: 760px;
+            margin: 0;
+            font-size: 1.15rem;
+            color: var(--text-muted);
+        }
+
+        .meta-card {
+            background: var(--surface-muted);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 22px;
+        }
+
+        .meta-card p {
+            margin: 0 0 10px;
+            color: var(--text-muted);
+        }
+
+        .meta-card strong {
+            color: var(--text);
+        }
+
+        main {
+            padding: 48px 0 72px;
+        }
+
         section {
-            padding: 50px 20px;
-            text-align: center;
+            margin-bottom: 64px;
+        }
+
+        .section-heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: end;
+            gap: 24px;
+            margin-bottom: 22px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 12px;
+        }
+
+        h2 {
+            margin: 0;
+            font-size: 1.6rem;
+            color: var(--accent-dark);
+        }
+
+        .section-note {
+            max-width: 640px;
+            margin: 0;
+            color: var(--text-muted);
+            font-size: 0.98rem;
+        }
+
+        .intro {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 28px;
+            box-shadow: var(--shadow);
+        }
+
+        .intro p {
+            max-width: 850px;
+            margin: 0 0 14px;
+            color: var(--text-muted);
+        }
+
+        .intro p:last-child {
+            margin-bottom: 0;
+        }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 20px;
         }
 
         .card {
-            background-color: #1e293b;
-            padding: 25px;
-            margin: 20px auto;
-            border-radius: 12px;
-            max-width: 600px;
-            transition: transform 0.2s ease;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: var(--shadow);
         }
 
-        .card:hover {
-            transform: scale(1.03);
+        .card h3 {
+            margin: 0 0 10px;
+            font-size: 1.15rem;
+            color: var(--text);
+        }
+
+        .card p {
+            margin: 0 0 16px;
+            color: var(--text-muted);
+        }
+
+        .tag-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 18px;
+        }
+
+        .tag {
+            display: inline-block;
+            padding: 4px 9px;
+            border-radius: 999px;
+            background: var(--surface-muted);
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .button-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
         }
 
         .btn {
             display: inline-block;
-            margin-top: 15px;
-            padding: 10px 20px;
-            background-color: #38bdf8;
-            color: #020617;
+            padding: 9px 14px;
+            background: var(--accent);
+            color: #ffffff;
             text-decoration: none;
-            border-radius: 6px;
-            font-weight: bold;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.92rem;
         }
 
         .btn:hover {
-            background-color: #0ea5e9;
+            background: var(--accent-dark);
+        }
+
+        .btn.secondary {
+            background: transparent;
+            color: var(--accent-dark);
+            border: 1px solid var(--border);
+        }
+
+        .btn.secondary:hover {
+            background: var(--surface-muted);
+        }
+
+        .image-preview {
+            width: 100%;
+            margin: 0 0 16px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            background: var(--surface-muted);
         }
 
         footer {
+            border-top: 1px solid var(--border);
+            padding: 28px 0;
+            color: var(--text-muted);
+            font-size: 0.92rem;
             text-align: center;
-            padding: 30px;
-            font-size: 0.9em;
-            color: #94a3b8;
+        }
+
+        @media (max-width: 800px) {
+            .topbar,
+            .section-heading,
+            .hero-grid {
+                display: block;
+            }
+
+            nav {
+                margin-top: 14px;
+            }
+
+            .hero {
+                padding: 48px 0;
+            }
+
+            .meta-card {
+                margin-top: 28px;
+            }
+
+            .card-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
 
 <body>
+    <header>
+        <div class="page">
+            <div class="topbar">
+                <a class="site-title" href="#top">Thesis Portfolio</a>
+                <nav aria-label="Main navigation">
+                    <a href="#about">About</a>
+                    <a href="#bike-data">Bike Data</a>
+                    <a href="#population-data">Population Distribution</a>
+                    <a href="#postal-code-data">Postal Code Data</a>
+                    <a href="#other-visualizations">Others</a>
+                    <a href="#contact">Contact</a>
+                </nav>
+            </div>
+        </div>
+    </header>
 
-<header>
-    <h1>Your Name</h1>
-    <p>Thesis Portfolio – Geospatial & Data Visualization</p>
+    <div id="top" class="page">
+        <section class="hero">
+            <div class="hero-grid">
+                <div>
+                    <h1>Geospatial Data Visualization Thesis Portfolio</h1>
+                    <p class="subtitle">
+                        A collection of interactive and static visualizations developed for my thesis, focusing on spatial patterns, population distribution, bike-related data, and postal-code-based analysis.
+                    </p>
+                </div>
 
-    <nav>
-        <a href="#about">About</a>
-        <a href="#projects">Projects</a>
-        <a href="#contact">Contact</a>
-    </nav>
-</header>
-
-<section id="about">
-    <h2>About</h2>
-    <p>
-        This portfolio presents my thesis work focusing on geospatial data analysis and 
-        interactive visualization. The project explores spatial patterns and communicates 
-        them through dynamic web-based tools.
-    </p>
-</section>
-
-<section id="projects">
-    <h2>Projects</h2>
-
-    <div class="card">
-        <h3>Interactive Population Visualization</h3>
-        <p>
-            An interactive map built using GeoJSON and web mapping technologies. 
-            It visualizes spatial population data with dynamic styling and user interaction.
-        </p>
-
-        <!-- IMPORTANT LINK -->
-        <a href="Population_distribution_interactive/" class="btn">Open Visualization</a>
+                <aside class="meta-card" aria-label="Thesis information">
+                    <p><strong>Author:</strong> Your Name</p>
+                    <p><strong>Institution:</strong> Your University</p>
+                    <p><strong>Thesis year:</strong> 2026</p>
+                    <p><strong>Methods:</strong> GIS, GeoJSON, web mapping, data visualization</p>
+                </aside>
+            </div>
+        </section>
     </div>
 
-</section>
+    <main class="page">
+        <section id="about">
+            <div class="section-heading">
+                <h2>About the Thesis</h2>
+            </div>
 
+            <div class="intro">
+                <p>
+                    This website presents the visual outputs of my thesis project. The aim is to communicate geospatial patterns through a combination of interactive web maps, static figures, and data-driven visual summaries.
+                </p>
+                <p>
+                    The portfolio is organized into thematic sections. Interactive visualizations open as separate HTML pages, while static outputs are provided as image-based figures.
+                </p>
+            </div>
+        </section>
 
-<footer>
-    <p>© 2026 Zsófia Tasnádi Tulogdi</p>
-</footer>
+        <section id="bike-data">
+            <div class="section-heading">
+                <h2>Bike Data</h2>
+                <p class="section-note">Visualizations related to cycling infrastructure, bike usage, accessibility, or spatial bike data.</p>
+            </div>
 
+            <div class="card-grid">
+                <article class="card">
+                    <h3>Bike Visualization 1</h3>
+                    <p>Briefly describe what this visualization shows and why it is relevant to the thesis.</p>
+                    <div class="tag-row">
+                        <span class="tag">Interactive HTML</span>
+                        <span class="tag">Map</span>
+                    </div>
+                    <div class="button-row">
+                        <a href="bike_data/visualization_1/" class="btn">Open Visualization</a>
+                    </div>
+                </article>
+
+                <article class="card">
+                    <h3>Bike Visualization 2</h3>
+                    <p>Use this card for a static figure, exported map, chart, or image-based visualization.</p>
+                    <div class="tag-row">
+                        <span class="tag">Static Image</span>
+                    </div>
+                    <div class="button-row">
+                        <a href="images/bike_visualization_2.png" class="btn">View Image</a>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <section id="population-data">
+            <div class="section-heading">
+                <h2>Population Distribution Data</h2>
+                <p class="section-note">Population-related spatial analyses, density maps, demographic patterns, or settlement-level comparisons.</p>
+            </div>
+
+            <div class="card-grid">
+                <article class="card">
+                    <h3>Interactive Population Visualization</h3>
+                    <p>An interactive map built using GeoJSON and web mapping technologies to explore spatial population patterns.</p>
+                    <div class="tag-row">
+                        <span class="tag">Interactive HTML</span>
+                        <span class="tag">GeoJSON</span>
+                    </div>
+                    <div class="button-row">
+                        <a href="Population_distribution_interactive/" class="btn">Open Visualization</a>
+                    </div>
+                </article>
+
+                <article class="card">
+                    <h3>Population Static Figure</h3>
+                    <p>A static visualization or exported map showing a key result from the population distribution analysis.</p>
+                    <div class="tag-row">
+                        <span class="tag">Static Image</span>
+                    </div>
+                    <div class="button-row">
+                        <a href="images/population_static_figure.png" class="btn">View Image</a>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <section id="postal-code-data">
+            <div class="section-heading">
+                <h2>Postal Code Based Data</h2>
+                <p class="section-note">Visualizations based on postal-code boundaries, regional aggregation, or postcode-level indicators.</p>
+            </div>
+
+            <div class="card-grid">
+                <article class="card">
+                    <h3>Postal Code Visualization 1</h3>
+                    <p>Describe the variable, spatial unit, and main purpose of this postal-code-based visualization.</p>
+                    <div class="tag-row">
+                        <span class="tag">Interactive HTML</span>
+                    </div>
+                    <div class="button-row">
+                        <a href="postal_code_data/visualization_1/" class="btn">Open Visualization</a>
+                    </div>
+                </article>
+
+                <article class="card">
+                    <h3>Postal Code Static Map</h3>
+                    <p>Use this card for an exported map or figure showing postcode-level spatial patterns.</p>
+                    <div class="tag-row">
+                        <span class="tag">Static Image</span>
+                    </div>
+                    <div class="button-row">
+                        <a href="images/postal_code_static_map.png" class="btn">View Image</a>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <section id="other-visualizations">
+            <div class="section-heading">
+                <h2>Other Visualizations</h2>
+                <p class="section-note">Additional figures, experimental outputs, supporting analyses, or supplementary thesis materials.</p>
+            </div>
+
+            <div class="card-grid">
+                <article class="card">
+                    <h3>Other Visualization 1</h3>
+                    <p>Briefly explain how this visualization supports the thesis or provides additional context.</p>
+                    <div class="tag-row">
+                        <span class="tag">Supplementary</span>
+                    </div>
+                    <div class="button-row">
+                        <a href="other/visualization_1/" class="btn">Open Visualization</a>
+                    </div>
+                </article>
+
+                <article class="card">
+                    <h3>Other Static Figure</h3>
+                    <p>Use this for charts, screenshots, maps, or other static visual materials.</p>
+                    <div class="tag-row">
+                        <span class="tag">Static Image</span>
+                    </div>
+                    <div class="button-row">
+                        <a href="images/other_static_figure.png" class="btn">View Image</a>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <section id="contact">
+            <div class="section-heading">
+                <h2>Contact</h2>
+            </div>
+
+            <div class="intro">
+                <p>
+                    For questions about this thesis portfolio, please contact: <a href="mailto:your.email@example.com">your.email@example.com</a>
+                </p>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="page">
+            <p>© 2026 Your Name · Thesis Portfolio</p>
+        </div>
+    </footer>
 </body>
 </html>
