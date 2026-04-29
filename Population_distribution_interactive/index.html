@@ -57,100 +57,99 @@
                 </select>
             </div>
         
-            <div id="map" class="map-container"></div>
-        
+            <div id="map" class="map-container">
+              // -----------------------------
+              // 1. BASEMAP (CartoDB)
+              // -----------------------------
+              const map = L.map('map', {
+                  renderer: L.canvas()  // IMPORTANT for performance
+              }).setView([60.17, 24.94], 11);
+              
+              L.tileLayer(
+                "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
+                {
+                  attribution: '&copy; OpenStreetMap & CartoDB'
+                }
+              ).addTo(map);
+              
+              // -----------------------------
+              // 2. GLOBAL STATE
+              // -----------------------------
+              let geojsonLayer;
+              let geoData;
+              
+              const colorScale = (value) => {
+                  if (value > 0.04) return "#800026";
+                  if (value > 0.01) return "#BD0026";
+                  if (value > 0.095) return "#E31A1C";
+                  if (value > 0.08) return "#FC4E2A";
+                  if (value > 0.005)  return "#FD8D3C";
+                  if (value > 0.002)  return "#FEB24C";
+                  if (value > 0.0005)   return "#FED976";
+                  return "#FFEDA0";
+              };
+              
+              // -----------------------------
+              // 3. LOAD DATA
+              // -----------------------------
+              fetch("helsinki_population.geojson")
+              .then(res => res.json())
+              .then(data => {
+                  geoData = data;
+                  drawLayer();
+              });
+              
+              // -----------------------------
+              // 4. STYLE FUNCTION
+              // -----------------------------
+              function getValue(feature) {
+                  const hour = document.getElementById("hourSlider").value;
+                  const day = document.getElementById("daySelect").value;
+              
+                  if (feature.properties.day_type !== day) return 0;
+              
+                  return feature.properties["H" + hour] || 0;
+              }
+              
+              function style(feature) {
+                  const value = getValue(feature);
+              
+                  return {
+                      fillColor: colorScale(value),
+                      weight: 0,
+                      fillOpacity: 0.6
+                  };
+              }
+              
+              // -----------------------------
+              // 5. DRAW LAYER
+              // -----------------------------
+              function drawLayer() {
+                  geojsonLayer = L.geoJSON(geoData, {
+                      style: style,
+                      renderer: L.canvas()
+                  }).addTo(map);
+              }
+              
+              // -----------------------------
+              // 6. UPDATE FUNCTION
+              // -----------------------------
+              function update() {
+                  document.getElementById("hourLabel").innerText =
+                      document.getElementById("hourSlider").value;
+              
+                  geojsonLayer.setStyle(style);
+              }
+              
+              // -----------------------------
+              // 7. EVENTS
+              // -----------------------------
+              document.getElementById("hourSlider").addEventListener("input", update);
+              document.getElementById("daySelect").addEventListener("change", update);
+            </div>        
         </div>
     </section>
 </main>
-
-// -----------------------------
-// 1. BASEMAP (CartoDB)
-// -----------------------------
-const map = L.map('map', {
-    renderer: L.canvas()  // IMPORTANT for performance
-}).setView([60.17, 24.94], 11);
-
-L.tileLayer(
-  "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
-  {
-    attribution: '&copy; OpenStreetMap & CartoDB'
-  }
-).addTo(map);
-
-// -----------------------------
-// 2. GLOBAL STATE
-// -----------------------------
-let geojsonLayer;
-let geoData;
-
-const colorScale = (value) => {
-    if (value > 0.04) return "#800026";
-    if (value > 0.01) return "#BD0026";
-    if (value > 0.095) return "#E31A1C";
-    if (value > 0.08) return "#FC4E2A";
-    if (value > 0.005)  return "#FD8D3C";
-    if (value > 0.002)  return "#FEB24C";
-    if (value > 0.0005)   return "#FED976";
-    return "#FFEDA0";
-};
-
-// -----------------------------
-// 3. LOAD DATA
-// -----------------------------
-fetch("helsinki_population.geojson")
-.then(res => res.json())
-.then(data => {
-    geoData = data;
-    drawLayer();
-});
-
-// -----------------------------
-// 4. STYLE FUNCTION
-// -----------------------------
-function getValue(feature) {
-    const hour = document.getElementById("hourSlider").value;
-    const day = document.getElementById("daySelect").value;
-
-    if (feature.properties.day_type !== day) return 0;
-
-    return feature.properties["H" + hour] || 0;
-}
-
-function style(feature) {
-    const value = getValue(feature);
-
-    return {
-        fillColor: colorScale(value),
-        weight: 0,
-        fillOpacity: 0.6
-    };
-}
-
-// -----------------------------
-// 5. DRAW LAYER
-// -----------------------------
-function drawLayer() {
-    geojsonLayer = L.geoJSON(geoData, {
-        style: style,
-        renderer: L.canvas()
-    }).addTo(map);
-}
-
-// -----------------------------
-// 6. UPDATE FUNCTION
-// -----------------------------
-function update() {
-    document.getElementById("hourLabel").innerText =
-        document.getElementById("hourSlider").value;
-
-    geojsonLayer.setStyle(style);
-}
-
-// -----------------------------
-// 7. EVENTS
-// -----------------------------
-document.getElementById("hourSlider").addEventListener("input", update);
-document.getElementById("daySelect").addEventListener("change", update);
 
 </body>
 </html>
