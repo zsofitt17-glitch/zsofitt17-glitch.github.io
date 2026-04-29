@@ -3,7 +3,9 @@
 <head>
 <meta charset="utf-8" />
 <title>Helsinki Population Interactive</title>
-  
+
+<link rel="stylesheet" href="../style.css">
+
 <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
@@ -16,24 +18,50 @@
 
 <body>
 
-<a href="../" class="back-button">← Back</a>
+<header>
+    <div class="page">
+        <div class="topbar">
+            <a class="site-title" href="../index.html">Thesis Portfolio</a>
+            <nav aria-label="Main navigation">
+                <a href="../index.html#about">About</a>
+                <a href="../index.html#bike-data">Bike Data</a>
+                <a href="../index.html#population-data">Population Distribution</a>
+                <a href="../index.html#postal-code-data">Postal Code Data</a>
+                <a href="../index.html#other-visualizations">Others</a>
+            </nav>
+        </div>
+    </div>
+</header>
 
-<div class="controls">
-  Hour:
-  <input type="range" id="hourSlider" min="0" max="23" value="9">
-  <span id="hourLabel">9</span>
+<main class="page">
+    <section>
+        <div class="section-heading">
+            <h2>Helsinki Population Distribution</h2>
+            <p class="section-note">
+                Interactive visualization of hourly population distribution by day type.
+            </p>
+        </div>
 
-  Day:
-  <select id="daySelect">
-    <option value="weekday">Weekday</option>
-    <option value="saturday">Saturday</option>
-    <option value="sunday">Sunday</option>
-  </select>
-</div>
+        <div class="visualization-frame">
 
-<div id="map"></div>
-
-<script>
+            <div class="controls">
+                Hour:
+                <input type="range" id="hourSlider" min="0" max="23" value="9">
+                <span id="hourLabel">9</span>
+        
+                Day:
+                <select id="daySelect">
+                    <option value="weekday">Weekday</option>
+                    <option value="saturday">Saturday</option>
+                    <option value="sunday">Sunday</option>
+                </select>
+            </div>
+        
+            <div id="map" class="map-container"></div>
+        
+        </div>
+    </section>
+</main>
 
 // -----------------------------
 // 1. BASEMAP (CartoDB)
@@ -123,8 +151,6 @@ function update() {
 // -----------------------------
 document.getElementById("hourSlider").addEventListener("input", update);
 document.getElementById("daySelect").addEventListener("change", update);
-
-</script>
 
 </body>
 </html>
