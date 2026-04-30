@@ -58,9 +58,8 @@
             </div>
         
             <div id="map" class="map-container">
-              // -----------------------------
-              // 1. BASEMAP (CartoDB)
-              // -----------------------------
+              <script>
+              
               const map = L.map('map', {
                   renderer: L.canvas()  // IMPORTANT for performance
               }).setView([60.17, 24.94], 11);
@@ -72,9 +71,7 @@
                 }
               ).addTo(map);
               
-              // -----------------------------
-              // 2. GLOBAL STATE
-              // -----------------------------
+
               let geojsonLayer;
               let geoData;
               
@@ -89,9 +86,7 @@
                   return "#FFEDA0";
               };
               
-              // -----------------------------
-              // 3. LOAD DATA
-              // -----------------------------
+
               fetch("helsinki_population.geojson")
               .then(res => res.json())
               .then(data => {
@@ -99,9 +94,7 @@
                   drawLayer();
               });
               
-              // -----------------------------
-              // 4. STYLE FUNCTION
-              // -----------------------------
+
               function getValue(feature) {
                   const hour = document.getElementById("hourSlider").value;
                   const day = document.getElementById("daySelect").value;
@@ -121,9 +114,7 @@
                   };
               }
               
-              // -----------------------------
-              // 5. DRAW LAYER
-              // -----------------------------
+
               function drawLayer() {
                   geojsonLayer = L.geoJSON(geoData, {
                       style: style,
@@ -131,9 +122,7 @@
                   }).addTo(map);
               }
               
-              // -----------------------------
-              // 6. UPDATE FUNCTION
-              // -----------------------------
+
               function update() {
                   document.getElementById("hourLabel").innerText =
                       document.getElementById("hourSlider").value;
@@ -141,11 +130,11 @@
                   geojsonLayer.setStyle(style);
               }
               
-              // -----------------------------
-              // 7. EVENTS
-              // -----------------------------
+
               document.getElementById("hourSlider").addEventListener("input", update);
               document.getElementById("daySelect").addEventListener("change", update);
+              
+              </script>
             </div>        
         </div>
     </section>
