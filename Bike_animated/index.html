@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Central Helsinki Bike Trips</title>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
+
+<style>
+  html, body {
+    margin: 0;
+    height: 100%;
+    background: #060912;
+    font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+    overflow: hidden;
+  }
+
+  #map {
+    position: absolute;
+    inset: 0;
+    background: #060912;
+  }
+
+  #fx {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 600;
+  }
+
+  #hud {
+    position: absolute;
+    left: 20px;
+    top: 20px;
+    z-index: 700;
+    color: #e9f7ff;
+    background: rgba(6, 10, 18, 0.72);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(120, 180, 220, 0.18);
+    border-radius: 16px;
+    padding: 14px 16px;
+    min-width: 280px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+  }
+
+  .title {
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 0.2px;
+    margin-bottom: 4px;
+  }
+
+  #clock {
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: #86f7ff;
+  }
+
+  .dot {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    vertical-align: middle;
+    margin-right: 8px;
+  }
+
+  .station-dot { background: #7dd3fc; }
+  .trip-dot { background: #86f7ff; }
+  .trail-dot { background: #c084fc; }
+
+  .leaflet-control-attribution {
+    display: none;
+  }
+</style>
+</head>
+<body>
+
+<div id="map"></div>
+<canvas id="fx"></canvas>
+
+<div id="hud">
+  <div class="title">Central Helsinki City Bike Trips</div>
+  <div id="clock">00:00</div>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+
+<script>
+/* -----------------------------
+   CONFIG
+----------------------------- */
+const TARGET_DAY = "2023-05-15";
+const START_HOUR = 0;
+const END_HOUR = 24;
+const DAY_LENGTH_SEC = (END_HOUR - START_HOUR) * 3600;
+
+// Animation speed:
+// 180 means 1 real second = 180 simulated seconds.
+// One whole day takes ~8 minutes.
+const SIM_SPEED = 300;
+
+// Visual duration clamp (in simulated seconds)
+const MIN_VIS_DURATION = 180;   // at least 3 simulated minutes
+const MAX_VIS_DURATION = 1800;  // at most 30 simulated minutes
+
+// Central Helsinki bounds
+const bounds = L.latLngBounds(
+  [60.145, 24.89],
+  [60.195, 25.01]
+);
+
+/* -----------------------------
+   MAP
+----------------------------- */
+const map = L.map('map', {
+  zoomControl: false,
+  dragging: false,
+  scrollWheelZoom: false,
+  doubleClickZoom: false,
+  boxZoom: false,
+  keyboard: false,
+  tap: false,
+  preferCanvas: true
+});
+
+map.fitBounds(bounds, { padding: [10, 10] });
+
+// Dark basemap, no labels
+L.tileLayer(
+  'https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png',
+  { subdomains: 'abcd', maxZoom: 19 }
+).addTo(map);
+
+/* -----------------------------
+   CANVAS
+----------------------------- */
+const canvas = document.getElementById("fx");
+const ctx = canvas.getContext("2d");
+const clockEl = document.getElementById("clock");
+
+function resizeCanvas() {
+  const rect = map.getContainer().getBoundingClientRect();
+  const dpr = window.devicePixelRatio || 1;
+
+  canvas.width = rect.width * dpr;
+  canvas.height = rect.height * dpr;
+  canvas.style.width = rect.width + "px";
+  canvas.style.height = rect.height + "px";
+
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+}
+resizeCanvas();
+window.addEventListener("resize", resizeCanvas);
+map.on("resize zoomend moveend viewreset", resizeCanvas);
+
+/* -----------------------------
+   DATA
+----------------------------- */
+let trips = [];
+let stations = [];
+let activeTrips = [];
+let ripples = [];
+let tripCursor = 0;
+let simTime = 0;
+let lastTs = null;
+
+function formatClock(secondsFromStart) {
+  const total = START_HOUR * 3600 + Math.max(0, Math.floor(secondsFromStart));
+  const hh = String(Math.floor(total / 3600) % 24).padStart(2, "0");
+  const mm = String(Math.floor((total % 3600) / 60)).padStart(2, "0");
+  return `${TARGET_DAY}  ${hh}:${mm}`;
+}
+
+function lerp(a, b, t) {
+  return a + (b - a) * t;
+}
+
+function spawnRipple(lat, lon, color = "134,247,255") {
+  ripples.push({
+    lat, lon,
+    born: simTime,
+    life: 420, // simulated seconds
+    color
+  });
+}
+
+function addStationMarkers(stationsData) {
+  stationsData.forEach(s => {
+
+    const size = 3; // much smaller than before
+
+    const icon = L.divIcon({
+      className: '',
+      html: `
+        <div style="
+          width:${size}px;
+          height:${size}px;
+          background: rgba(160, 180, 200, 0.35);
+          border: 1px solid rgba(160, 180, 200, 0.6);
+          transform: rotate(45deg);
+        "></div>
+      `,
+      iconSize: [size, size],
+      iconAnchor: [size/2, size/2]
+    });
+
+    L.marker([s.lat, s.lon], {
+      icon: icon,
+      interactive: false
+    }).addTo(map);
+
+  });
+}
+
+function resetAnimation() {
+  activeTrips = [];
+  ripples = [];
+  tripCursor = 0;
+  simTime = 0;
+  lastTs = null;
+}
+
+function startTrip(trip) {
+  const duration = Math.max(MIN_VIS_DURATION, Math.min(MAX_VIS_DURATION, Number(trip.duration_sec || 0)));
+
+  activeTrips.push({
+    lat1: Number(trip.lat1),
+    lon1: Number(trip.lon1),
+    lat2: Number(trip.lat2),
+    lon2: Number(trip.lon2),
+    start_sec: Number(trip.start_sec),
+    duration_sec: duration
+  });
+
+  spawnRipple(trip.lat1, trip.lon1, "134,247,255");
+}
+
+function drawRipple(r) {
+  const age = simTime - r.born;
+  if (age < 0 || age > r.life) return false;
+
+  const t = age / r.life;
+  const p = map.latLngToContainerPoint([r.lat, r.lon]);
+  const radius = 4 + 18 * t;
+  const alpha = 0.55 * (1 - t);
+
+  ctx.beginPath();
+  ctx.arc(p.x, p.y, radius, 0, Math.PI * 2);
+  ctx.strokeStyle = `rgba(${r.color}, ${alpha})`;
+  ctx.lineWidth = 1.5;
+  ctx.stroke();
+
+  return true;
+}
+
+function drawTrip(trip) {
+  const elapsed = simTime - trip.start_sec;
+  const progress = elapsed / trip.duration_sec;
+
+  if (progress < 0) return true;
+
+  if (progress >= 1) {
+    spawnRipple(trip.lat2, trip.lon2, "192,132,252");
+    return false;
+  }
+
+  const t1 = Math.max(0, progress - 0.08);
+  const t2 = progress;
+
+  const latPrev = lerp(trip.lat1, trip.lat2, t1);
+  const lonPrev = lerp(trip.lon1, trip.lon2, t1);
+  const latCurr = lerp(trip.lat1, trip.lat2, t2);
+  const lonCurr = lerp(trip.lon1, trip.lon2, t2);
+
+  const p1 = map.latLngToContainerPoint([latPrev, lonPrev]);
+  const p2 = map.latLngToContainerPoint([latCurr, lonCurr]);
+
+  // trail
+  ctx.beginPath();
+  ctx.moveTo(p1.x, p1.y);
+  ctx.lineTo(p2.x, p2.y);
+  ctx.strokeStyle = "rgba(192,132,252,0.35)";
+  ctx.lineWidth = 2.2;
+  ctx.stroke();
+
+  // glowing dot
+  ctx.save();
+  ctx.shadowColor = "rgba(134,247,255,0.9)";
+  ctx.shadowBlur = 12;
+
+  ctx.beginPath();
+  ctx.arc(p2.x, p2.y, 3.8, 0, Math.PI * 2);
+  ctx.fillStyle = "rgba(134,247,255,0.95)";
+  ctx.fill();
+
+  ctx.restore();
+
+  // inner bright core
+  ctx.beginPath();
+  ctx.arc(p2.x, p2.y, 1.8, 0, Math.PI * 2);
+  ctx.fillStyle = "rgba(235,255,255,0.95)";
+  ctx.fill();
+
+  return true;
+}
+
+function animate(ts) {
+  if (lastTs == null) lastTs = ts;
+  const dt = (ts - lastTs) / 1000;
+  lastTs = ts;
+
+  simTime += dt * SIM_SPEED;
+
+  // Restart after the selected period
+  if (simTime > DAY_LENGTH_SEC) {
+    resetAnimation();
+    requestAnimationFrame(animate);
+    return;
+  }
+
+  // Spawn new trips efficiently
+  while (tripCursor < trips.length && Number(trips[tripCursor].start_sec) <= simTime) {
+    startTrip(trips[tripCursor]);
+    tripCursor++;
+  }
+
+  clockEl.textContent = formatClock(simTime);
+
+  // Clear canvas
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  // Ripples
+  ripples = ripples.filter(drawRipple);
+
+  // Trips
+  activeTrips = activeTrips.filter(drawTrip);
+
+  requestAnimationFrame(animate);
+}
+
+Promise.all([
+  fetch("stations_central.json").then(r => r.json()),
+  fetch("trips_central.json").then(r => r.json())
+]).then(([stationsData, tripsData]) => {
+  stations = stationsData;
+  trips = tripsData;
+
+  addStationMarkers(stations);
+
+  console.log("Stations:", stations.length);
+  console.log("Trips:", trips.length);
+
+  requestAnimationFrame(animate);
+}).catch(err => {
+  console.error("Failed to load data:", err);
+});
+</script>
+
+</body>
+</html>
