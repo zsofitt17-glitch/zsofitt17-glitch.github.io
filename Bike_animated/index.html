@@ -2,360 +2,430 @@
 <html lang="en">
 <head>
 <meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Central Helsinki Bike Trips</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
+<title>Animated Helsinki Bike Trips</title>
+
+<link rel="stylesheet" href="../style.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 
 <style>
-  html, body {
-    margin: 0;
-    height: 100%;
-    background: #060912;
-    font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
-    overflow: hidden;
+  .bike-comparison-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
   }
 
-  #map {
+  .bike-panel {
+    background: #060912;
+    border-radius: 18px;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.12);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.25);
+  }
+
+  .bike-panel-header {
+    padding: 14px 16px;
+    background: rgba(10, 14, 24, 0.95);
+    color: #e9f7ff;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+
+  .bike-panel-header h3 {
+    margin: 0;
+    font-size: 1rem;
+  }
+
+  .bike-panel-header p {
+    margin: 4px 0 0;
+    font-size: 0.85rem;
+    opacity: 0.75;
+  }
+
+  .bike-map-wrap {
+    position: relative;
+    height: 68vh;
+    min-height: 520px;
+  }
+
+  .bike-map {
     position: absolute;
     inset: 0;
     background: #060912;
   }
 
-  #fx {
+  .bike-canvas {
     position: absolute;
     inset: 0;
     pointer-events: none;
     z-index: 600;
   }
 
-  #hud {
+  .bike-clock {
     position: absolute;
-    left: 20px;
-    top: 20px;
+    left: 14px;
+    top: 14px;
     z-index: 700;
-    color: #e9f7ff;
-    background: rgba(6, 10, 18, 0.72);
-    backdrop-filter: blur(8px);
-    border: 1px solid rgba(120, 180, 220, 0.18);
-    border-radius: 16px;
-    padding: 14px 16px;
-    min-width: 280px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.35);
-  }
-
-  .title {
-    font-size: 18px;
-    font-weight: 700;
-    letter-spacing: 0.2px;
-    margin-bottom: 4px;
-  }
-
-  #clock {
-    font-size: 28px;
-    font-weight: 700;
-    letter-spacing: 1px;
     color: #86f7ff;
+    background: rgba(6, 10, 18, 0.72);
+    border: 1px solid rgba(120, 180, 220, 0.18);
+    border-radius: 12px;
+    padding: 8px 12px;
+    font-weight: 700;
+    font-size: 1rem;
+    letter-spacing: 0.5px;
   }
-
-  .dot {
-    display: inline-block;
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    vertical-align: middle;
-    margin-right: 8px;
-  }
-
-  .station-dot { background: #7dd3fc; }
-  .trip-dot { background: #86f7ff; }
-  .trail-dot { background: #c084fc; }
 
   .leaflet-control-attribution {
     display: none;
   }
+
+  @media (max-width: 900px) {
+    .bike-comparison-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .bike-map-wrap {
+      height: 60vh;
+      min-height: 420px;
+    }
+  }
 </style>
 </head>
+
 <body>
 
-<div id="map"></div>
-<canvas id="fx"></canvas>
+<header>
+  <div class="page">
+    <div class="topbar">
+      <a class="site-title" href="../index.html">Thesis Portfolio</a>
+      <nav aria-label="Main navigation">
+        <a href="../index.html#about">About</a>
+        <a href="../index.html#bike-data">Bike Data</a>
+        <a href="../index.html#population-data">Population Distribution</a>
+        <a href="../index.html#postal-code-data">Postal Code Data</a>
+        <a href="../index.html#other-visualizations">Others</a>
+      </nav>
+    </div>
+  </div>
+</header>
 
-<div id="hud">
-  <div class="title">Central Helsinki City Bike Trips</div>
-  <div id="clock">00:00</div>
-</div>
+<main class="page">
+  <section>
+    <div class="section-heading">
+      <h2>Animated Helsinki City Bike Trips</h2>
+      <p class="section-note">
+        Comparison of central Helsinki bike trip activity during night-time and morning peak hours.
+      </p>
+    </div>
 
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+    <div class="bike-comparison-grid">
+
+      <article class="bike-panel">
+        <div class="bike-panel-header">
+          <h3>Night activity</h3>
+          <p>Trips between 00:00 and 02:00</p>
+        </div>
+        <div class="bike-map-wrap">
+          <div id="map-night" class="bike-map"></div>
+          <canvas id="canvas-night" class="bike-canvas"></canvas>
+          <div id="clock-night" class="bike-clock">00:00</div>
+        </div>
+      </article>
+
+      <article class="bike-panel">
+        <div class="bike-panel-header">
+          <h3>Morning activity</h3>
+          <p>Trips between 07:00 and 09:00</p>
+        </div>
+        <div class="bike-map-wrap">
+          <div id="map-morning" class="bike-map"></div>
+          <canvas id="canvas-morning" class="bike-canvas"></canvas>
+          <div id="clock-morning" class="bike-clock">07:00</div>
+        </div>
+      </article>
+
+    </div>
+  </section>
+</main>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <script>
-/* -----------------------------
-   CONFIG
------------------------------ */
-const TARGET_DAY = "2023-05-15";
-const START_HOUR = 0;
-const END_HOUR = 24;
-const DAY_LENGTH_SEC = (END_HOUR - START_HOUR) * 3600;
+function createBikeAnimation(config) {
+  const {
+    mapId,
+    canvasId,
+    clockId,
+    stationsFile,
+    tripsFile,
+    startHour,
+    endHour
+  } = config;
 
-// Animation speed:
-// 180 means 1 real second = 180 simulated seconds.
-// One whole day takes ~8 minutes.
-const SIM_SPEED = 300;
+  const bounds = L.latLngBounds(
+    [60.145, 24.89],
+    [60.195, 25.01]
+  );
 
-// Visual duration clamp (in simulated seconds)
-const MIN_VIS_DURATION = 180;   // at least 3 simulated minutes
-const MAX_VIS_DURATION = 1800;  // at most 30 simulated minutes
-
-// Central Helsinki bounds
-const bounds = L.latLngBounds(
-  [60.145, 24.89],
-  [60.195, 25.01]
-);
-
-/* -----------------------------
-   MAP
------------------------------ */
-const map = L.map('map', {
-  zoomControl: false,
-  dragging: false,
-  scrollWheelZoom: false,
-  doubleClickZoom: false,
-  boxZoom: false,
-  keyboard: false,
-  tap: false,
-  preferCanvas: true
-});
-
-map.fitBounds(bounds, { padding: [10, 10] });
-
-// Dark basemap, no labels
-L.tileLayer(
-  'https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png',
-  { subdomains: 'abcd', maxZoom: 19 }
-).addTo(map);
-
-/* -----------------------------
-   CANVAS
------------------------------ */
-const canvas = document.getElementById("fx");
-const ctx = canvas.getContext("2d");
-const clockEl = document.getElementById("clock");
-
-function resizeCanvas() {
-  const rect = map.getContainer().getBoundingClientRect();
-  const dpr = window.devicePixelRatio || 1;
-
-  canvas.width = rect.width * dpr;
-  canvas.height = rect.height * dpr;
-  canvas.style.width = rect.width + "px";
-  canvas.style.height = rect.height + "px";
-
-  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-}
-resizeCanvas();
-window.addEventListener("resize", resizeCanvas);
-map.on("resize zoomend moveend viewreset", resizeCanvas);
-
-/* -----------------------------
-   DATA
------------------------------ */
-let trips = [];
-let stations = [];
-let activeTrips = [];
-let ripples = [];
-let tripCursor = 0;
-let simTime = 0;
-let lastTs = null;
-
-function formatClock(secondsFromStart) {
-  const total = START_HOUR * 3600 + Math.max(0, Math.floor(secondsFromStart));
-  const hh = String(Math.floor(total / 3600) % 24).padStart(2, "0");
-  const mm = String(Math.floor((total % 3600) / 60)).padStart(2, "0");
-  return `${TARGET_DAY}  ${hh}:${mm}`;
-}
-
-function lerp(a, b, t) {
-  return a + (b - a) * t;
-}
-
-function spawnRipple(lat, lon, color = "134,247,255") {
-  ripples.push({
-    lat, lon,
-    born: simTime,
-    life: 420, // simulated seconds
-    color
+  const map = L.map(mapId, {
+    zoomControl: false,
+    dragging: false,
+    scrollWheelZoom: false,
+    doubleClickZoom: false,
+    boxZoom: false,
+    keyboard: false,
+    tap: false,
+    preferCanvas: true
   });
-}
 
-function addStationMarkers(stationsData) {
-  stationsData.forEach(s => {
+  map.fitBounds(bounds, { padding: [10, 10] });
 
-    const size = 3; // much smaller than before
+  L.tileLayer(
+    "https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png",
+    {
+      subdomains: "abcd",
+      maxZoom: 19,
+      opacity: 0.85
+    }
+  ).addTo(map);
 
-    const icon = L.divIcon({
-      className: '',
-      html: `
-        <div style="
-          width:${size}px;
-          height:${size}px;
-          background: rgba(160, 180, 200, 0.35);
-          border: 1px solid rgba(160, 180, 200, 0.6);
-          transform: rotate(45deg);
-        "></div>
-      `,
-      iconSize: [size, size],
-      iconAnchor: [size/2, size/2]
+  const canvas = document.getElementById(canvasId);
+  const ctx = canvas.getContext("2d");
+  const clockEl = document.getElementById(clockId);
+
+  let trips = [];
+  let activeTrips = [];
+  let ripples = [];
+  let tripCursor = 0;
+  let simTime = 0;
+  let lastTs = null;
+
+  const dayLengthSec = (endHour - startHour) * 3600;
+  const simSpeed = 90;
+
+  const minVisualDuration = 180;
+  const maxVisualDuration = 1800;
+
+  function resizeCanvas() {
+    const rect = document.getElementById(mapId).getBoundingClientRect();
+    const dpr = window.devicePixelRatio || 1;
+
+    canvas.width = rect.width * dpr;
+    canvas.height = rect.height * dpr;
+    canvas.style.width = rect.width + "px";
+    canvas.style.height = rect.height + "px";
+
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+
+  resizeCanvas();
+  window.addEventListener("resize", resizeCanvas);
+  map.on("resize zoomend moveend viewreset", resizeCanvas);
+
+  function formatClock(secondsFromStart) {
+    const total = startHour * 3600 + Math.floor(secondsFromStart);
+    const hh = String(Math.floor(total / 3600) % 24).padStart(2, "0");
+    const mm = String(Math.floor((total % 3600) / 60).padStart ? "" : "");
+  }
+
+  function updateClock() {
+    const total = startHour * 3600 + Math.floor(simTime);
+    const hh = String(Math.floor(total / 3600) % 24).padStart(2, "0");
+    const mm = String(Math.floor((total % 3600) / 60)).padStart(2, "0");
+    clockEl.textContent = `${hh}:${mm}`;
+  }
+
+  function lerp(a, b, t) {
+    return a + (b - a) * t;
+  }
+
+  function addStations(stations) {
+    stations.forEach(s => {
+      const size = 3;
+
+      const icon = L.divIcon({
+        className: "",
+        html: `
+          <div style="
+            width:${size}px;
+            height:${size}px;
+            background: rgba(170, 190, 210, 0.35);
+            border: 1px solid rgba(170, 190, 210, 0.65);
+            transform: rotate(45deg);
+          "></div>
+        `,
+        iconSize: [size, size],
+        iconAnchor: [size / 2, size / 2]
+      });
+
+      L.marker([s.lat, s.lon], {
+        icon,
+        interactive: false
+      }).addTo(map);
+    });
+  }
+
+  function spawnRipple(lat, lon, color) {
+    ripples.push({
+      lat,
+      lon,
+      born: simTime,
+      life: 420,
+      color
+    });
+  }
+
+  function startTrip(trip) {
+    activeTrips.push({
+      lat1: Number(trip.lat1),
+      lon1: Number(trip.lon1),
+      lat2: Number(trip.lat2),
+      lon2: Number(trip.lon2),
+      start_sec: Number(trip.start_sec),
+      duration_sec: Math.max(
+        minVisualDuration,
+        Math.min(maxVisualDuration, Number(trip.duration_sec || trip["Duration (sec.)"] || 300))
+      )
     });
 
-    L.marker([s.lat, s.lon], {
-      icon: icon,
-      interactive: false
-    }).addTo(map);
-
-  });
-}
-
-function resetAnimation() {
-  activeTrips = [];
-  ripples = [];
-  tripCursor = 0;
-  simTime = 0;
-  lastTs = null;
-}
-
-function startTrip(trip) {
-  const duration = Math.max(MIN_VIS_DURATION, Math.min(MAX_VIS_DURATION, Number(trip.duration_sec || 0)));
-
-  activeTrips.push({
-    lat1: Number(trip.lat1),
-    lon1: Number(trip.lon1),
-    lat2: Number(trip.lat2),
-    lon2: Number(trip.lon2),
-    start_sec: Number(trip.start_sec),
-    duration_sec: duration
-  });
-
-  spawnRipple(trip.lat1, trip.lon1, "134,247,255");
-}
-
-function drawRipple(r) {
-  const age = simTime - r.born;
-  if (age < 0 || age > r.life) return false;
-
-  const t = age / r.life;
-  const p = map.latLngToContainerPoint([r.lat, r.lon]);
-  const radius = 4 + 18 * t;
-  const alpha = 0.55 * (1 - t);
-
-  ctx.beginPath();
-  ctx.arc(p.x, p.y, radius, 0, Math.PI * 2);
-  ctx.strokeStyle = `rgba(${r.color}, ${alpha})`;
-  ctx.lineWidth = 1.5;
-  ctx.stroke();
-
-  return true;
-}
-
-function drawTrip(trip) {
-  const elapsed = simTime - trip.start_sec;
-  const progress = elapsed / trip.duration_sec;
-
-  if (progress < 0) return true;
-
-  if (progress >= 1) {
-    spawnRipple(trip.lat2, trip.lon2, "192,132,252");
-    return false;
+    spawnRipple(trip.lat1, trip.lon1, "134,247,255");
   }
 
-  const t1 = Math.max(0, progress - 0.08);
-  const t2 = progress;
+  function drawRipple(r) {
+    const age = simTime - r.born;
+    if (age < 0 || age > r.life) return false;
 
-  const latPrev = lerp(trip.lat1, trip.lat2, t1);
-  const lonPrev = lerp(trip.lon1, trip.lon2, t1);
-  const latCurr = lerp(trip.lat1, trip.lat2, t2);
-  const lonCurr = lerp(trip.lon1, trip.lon2, t2);
+    const t = age / r.life;
+    const p = map.latLngToContainerPoint([r.lat, r.lon]);
 
-  const p1 = map.latLngToContainerPoint([latPrev, lonPrev]);
-  const p2 = map.latLngToContainerPoint([latCurr, lonCurr]);
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, 4 + 18 * t, 0, Math.PI * 2);
+    ctx.strokeStyle = `rgba(${r.color}, ${0.25 * (1 - t)})`;
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
 
-  // trail
-  ctx.beginPath();
-  ctx.moveTo(p1.x, p1.y);
-  ctx.lineTo(p2.x, p2.y);
-  ctx.strokeStyle = "rgba(192,132,252,0.35)";
-  ctx.lineWidth = 2.2;
-  ctx.stroke();
+    return true;
+  }
 
-  // glowing dot
-  ctx.save();
-  ctx.shadowColor = "rgba(134,247,255,0.9)";
-  ctx.shadowBlur = 12;
+  function drawTrip(trip) {
+    const elapsed = simTime - trip.start_sec;
+    const progress = elapsed / trip.duration_sec;
 
-  ctx.beginPath();
-  ctx.arc(p2.x, p2.y, 3.8, 0, Math.PI * 2);
-  ctx.fillStyle = "rgba(134,247,255,0.95)";
-  ctx.fill();
+    if (progress < 0) return true;
 
-  ctx.restore();
+    if (progress >= 1) {
+      spawnRipple(trip.lat2, trip.lon2, "192,132,252");
+      return false;
+    }
 
-  // inner bright core
-  ctx.beginPath();
-  ctx.arc(p2.x, p2.y, 1.8, 0, Math.PI * 2);
-  ctx.fillStyle = "rgba(235,255,255,0.95)";
-  ctx.fill();
+    const t1 = Math.max(0, progress - 0.08);
+    const t2 = progress;
 
-  return true;
-}
+    const p1 = map.latLngToContainerPoint([
+      lerp(trip.lat1, trip.lat2, t1),
+      lerp(trip.lon1, trip.lon2, t1)
+    ]);
 
-function animate(ts) {
-  if (lastTs == null) lastTs = ts;
-  const dt = (ts - lastTs) / 1000;
-  lastTs = ts;
+    const p2 = map.latLngToContainerPoint([
+      lerp(trip.lat1, trip.lat2, t2),
+      lerp(trip.lon1, trip.lon2, t2)
+    ]);
 
-  simTime += dt * SIM_SPEED;
+    ctx.beginPath();
+    ctx.moveTo(p1.x, p1.y);
+    ctx.lineTo(p2.x, p2.y);
+    ctx.strokeStyle = "rgba(180,120,255,0.55)";
+    ctx.lineWidth = 3.5;
+    ctx.stroke();
 
-  // Restart after the selected period
-  if (simTime > DAY_LENGTH_SEC) {
-    resetAnimation();
+    ctx.save();
+    ctx.shadowColor = "rgba(120,255,255,1)";
+    ctx.shadowBlur = 18;
+
+    ctx.beginPath();
+    ctx.arc(p2.x, p2.y, 5.5, 0, Math.PI * 2);
+    ctx.fillStyle = "rgba(120,255,255,1)";
+    ctx.fill();
+
+    ctx.restore();
+
+    ctx.beginPath();
+    ctx.arc(p2.x, p2.y, 2.5, 0, Math.PI * 2);
+    ctx.fillStyle = "rgba(255,255,255,1)";
+    ctx.fill();
+
+    return true;
+  }
+
+  function resetAnimation() {
+    activeTrips = [];
+    ripples = [];
+    tripCursor = 0;
+    simTime = 0;
+    lastTs = null;
+  }
+
+  function animate(ts) {
+    if (lastTs === null) lastTs = ts;
+
+    const dt = (ts - lastTs) / 1000;
+    lastTs = ts;
+
+    simTime += dt * simSpeed;
+
+    if (simTime > dayLengthSec) {
+      resetAnimation();
+      requestAnimationFrame(animate);
+      return;
+    }
+
+    while (
+      tripCursor < trips.length &&
+      Number(trips[tripCursor].start_sec) <= simTime
+    ) {
+      startTrip(trips[tripCursor]);
+      tripCursor++;
+    }
+
+    updateClock();
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    ripples = ripples.filter(drawRipple);
+    activeTrips = activeTrips.filter(drawTrip);
+
     requestAnimationFrame(animate);
-    return;
   }
 
-  // Spawn new trips efficiently
-  while (tripCursor < trips.length && Number(trips[tripCursor].start_sec) <= simTime) {
-    startTrip(trips[tripCursor]);
-    tripCursor++;
-  }
-
-  clockEl.textContent = formatClock(simTime);
-
-  // Clear canvas
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-  // Ripples
-  ripples = ripples.filter(drawRipple);
-
-  // Trips
-  activeTrips = activeTrips.filter(drawTrip);
-
-  requestAnimationFrame(animate);
+  Promise.all([
+    fetch(stationsFile).then(r => r.json()),
+    fetch(tripsFile).then(r => r.json())
+  ]).then(([stations, tripsData]) => {
+    trips = tripsData.sort((a, b) => Number(a.start_sec) - Number(b.start_sec));
+    addStations(stations);
+    requestAnimationFrame(animate);
+  });
 }
 
-Promise.all([
-  fetch("stations_central.json").then(r => r.json()),
-  fetch("trips_central.json").then(r => r.json())
-]).then(([stationsData, tripsData]) => {
-  stations = stationsData;
-  trips = tripsData;
+createBikeAnimation({
+  mapId: "map-night",
+  canvasId: "canvas-night",
+  clockId: "clock-night",
+  stationsFile: "stations_central_0-2.json",
+  tripsFile: "trips_central_0-2.json",
+  startHour: 0,
+  endHour: 2
+});
 
-  addStationMarkers(stations);
-
-  console.log("Stations:", stations.length);
-  console.log("Trips:", trips.length);
-
-  requestAnimationFrame(animate);
-}).catch(err => {
-  console.error("Failed to load data:", err);
+createBikeAnimation({
+  mapId: "map-morning",
+  canvasId: "canvas-morning",
+  clockId: "clock-morning",
+  stationsFile: "stations_central_7-9.json",
+  tripsFile: "trips_central_7-9.json",
+  startHour: 7,
+  endHour: 9
 });
 </script>
 
