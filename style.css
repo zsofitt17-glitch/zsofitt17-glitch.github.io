@@ -289,6 +289,12 @@ footer {
     box-shadow: var(--shadow);
 }
 
+.visualization-frame iframe {
+  width: 100%;
+  height: 90vh;
+  border: none;
+}
+
 .map-container {
     height: 75vh;
     min-height: 500px;
