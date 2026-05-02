@@ -74,16 +74,18 @@
 
               let geojsonLayer;
               let geoData;
-              
+
               const colorScale = (value) => {
-                  if (value > 0.04) return "#800026";
-                  if (value > 0.01) return "#BD0026";
-                  if (value > 0.095) return "#E31A1C";
-                  if (value > 0.08) return "#FC4E2A";
-                  if (value > 0.005)  return "#FD8D3C";
-                  if (value > 0.002)  return "#FEB24C";
-                  if (value > 0.0005)   return "#FED976";
-                  return "#FFEDA0";
+                  if (value > 0.01760) return "#003d00";
+                  if (value > 0.00866) return "#006400";
+                  if (value > 0.00476) return "#228b22";
+                  if (value > 0.00248) return "#2e8b57";
+                  if (value > 0.00120) return "#3cb371";
+                  if (value > 0.00058) return "#66cdaa";
+                  if (value > 0.00027)  return "#98fb98";
+                  if (value > 0.00013)  return "#c1ffc1";
+                  if (value > 0.00004)   return "#e0ffe0";
+                  return "#f0fff0";
               };
               
 
