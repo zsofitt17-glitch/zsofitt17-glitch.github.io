@@ -56,7 +56,7 @@
 
     #info-panel h2 {
         margin-top: 0;
-        font-size: 14x;
+        font-size: 14px;
     }
 
     .metric {
@@ -220,7 +220,6 @@
 
                 document.getElementById('info-panel').innerHTML = `
                     <h2>${p.name}</h2>
-                    <p><strong>Postal code:</strong> ${p.postal_code}</p>
 
                     ${metricBlock('Median household income', p.median_income, p.median_income_score, 'income', '€')}
                     ${metricBlock('Dwellings', p.dwellings, p.dwellings_score, 'dwellings', '⬤')}
