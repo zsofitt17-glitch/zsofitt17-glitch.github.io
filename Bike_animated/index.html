@@ -13,7 +13,7 @@
   .bike-comparison-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 18px;
+    gap: 28px;
   }
 
   .bike-panel {
@@ -44,8 +44,8 @@
 
   .bike-map-wrap {
     position: relative;
-    height: 48vh;
-    min-height: 360px;
+    height: 56vh;
+    min-height: 440px;
   }
 
   .bike-map {
@@ -83,11 +83,12 @@
   @media (max-width: 900px) {
     .bike-comparison-grid {
       grid-template-columns: 1fr;
+      gap: 24px;
     }
 
     .bike-map-wrap {
-      height: 46vh;
-      min-height: 340px;
+      height: 54vh;
+      min-height: 400px;
     }
   }
 </style>
@@ -188,8 +189,8 @@ function createBikeAnimation(config) {
   } = config;
 
   const bounds = L.latLngBounds(
-    [60.152, 24.905],
-    [60.188, 24.995]
+    [60.148, 24.895],
+    [60.192, 25.005]
   );
 
   const map = L.map(mapId, {
@@ -203,7 +204,7 @@ function createBikeAnimation(config) {
     preferCanvas: true
   });
 
-  map.fitBounds(bounds, { padding: [0, 0] });
+  map.fitBounds(bounds, { padding: [16, 16] });
 
   L.tileLayer(
     "https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png",
@@ -235,8 +236,8 @@ function createBikeAnimation(config) {
     const rect = document.getElementById(mapId).getBoundingClientRect();
     const dpr = window.devicePixelRatio || 1;
 
-    canvas.width = rect.width * dpr;
-    canvas.height = rect.height * dpr;
+    canvas.width = Math.round(rect.width * dpr);
+    canvas.height = Math.round(rect.height * dpr);
     canvas.style.width = rect.width + "px";
     canvas.style.height = rect.height + "px";
 
@@ -261,6 +262,11 @@ function createBikeAnimation(config) {
 
   function addStations(stations) {
     stations.forEach(s => {
+      const lat = Number(s.lat);
+      const lon = Number(s.lon);
+
+      if (!Number.isFinite(lat) || !Number.isFinite(lon)) return;
+
       const size = 3;
 
       const icon = L.divIcon({
@@ -278,7 +284,7 @@ function createBikeAnimation(config) {
         iconAnchor: [size / 2, size / 2]
       });
 
-      L.marker([s.lat, s.lon], {
+      L.marker([lat, lon], {
         icon,
         interactive: false
       }).addTo(map);
@@ -286,6 +292,11 @@ function createBikeAnimation(config) {
   }
 
   function spawnRipple(lat, lon, color) {
+    lat = Number(lat);
+    lon = Number(lon);
+
+    if (!Number.isFinite(lat) || !Number.isFinite(lon)) return;
+
     ripples.push({
       lat,
       lon,
@@ -296,30 +307,60 @@ function createBikeAnimation(config) {
   }
 
   function startTrip(trip) {
+    const lat1 = Number(trip.lat1);
+    const lon1 = Number(trip.lon1);
+    const lat2 = Number(trip.lat2);
+    const lon2 = Number(trip.lon2);
+    const startSec = Number(trip.start_sec);
+    const rawDuration = Number(trip.duration_sec || trip["Duration (sec.)"] || 300);
+
+    if (
+      !Number.isFinite(lat1) ||
+      !Number.isFinite(lon1) ||
+      !Number.isFinite(lat2) ||
+      !Number.isFinite(lon2) ||
+      !Number.isFinite(startSec)
+    ) {
+      return;
+    }
+
     activeTrips.push({
-      lat1: Number(trip.lat1),
-      lon1: Number(trip.lon1),
-      lat2: Number(trip.lat2),
-      lon2: Number(trip.lon2),
-      start_sec: Number(trip.start_sec),
+      lat1,
+      lon1,
+      lat2,
+      lon2,
+      start_sec: startSec,
       duration_sec: Math.max(
         minVisualDuration,
-        Math.min(
-          maxVisualDuration,
-          Number(trip.duration_sec || trip["Duration (sec.)"] || 300)
-        )
-      )
+        Math.min(maxVisualDuration, Number.isFinite(rawDuration) ? rawDuration : 300)
+      ),
+      endRippleDone: false
     });
 
-    spawnRipple(trip.lat1, trip.lon1, "134,247,255");
+    spawnRipple(lat1, lon1, "134,247,255");
+  }
+
+  function isPointVisibleEnough(p, rect, margin = 80) {
+    return (
+      p.x >= -margin &&
+      p.x <= rect.width + margin &&
+      p.y >= -margin &&
+      p.y <= rect.height + margin
+    );
   }
 
   function drawRipple(r) {
     const age = simTime - r.born;
+
     if (age < 0 || age > r.life) return false;
 
     const t = age / r.life;
     const p = map.latLngToContainerPoint([r.lat, r.lon]);
+    const rect = canvas.getBoundingClientRect();
+
+    if (!isPointVisibleEnough(p, rect, 40)) {
+      return true;
+    }
 
     ctx.beginPath();
     ctx.arc(p.x, p.y, 4 + 18 * t, 0, Math.PI * 2);
@@ -337,7 +378,11 @@ function createBikeAnimation(config) {
     if (progress < 0) return true;
 
     if (progress >= 1) {
-      spawnRipple(trip.lat2, trip.lon2, "192,132,252");
+      if (!trip.endRippleDone) {
+        spawnRipple(trip.lat2, trip.lon2, "192,132,252");
+        trip.endRippleDone = true;
+      }
+
       return false;
     }
 
@@ -353,6 +398,15 @@ function createBikeAnimation(config) {
       lerp(trip.lat1, trip.lat2, t2),
       lerp(trip.lon1, trip.lon2, t2)
     ]);
+
+    const rect = canvas.getBoundingClientRect();
+
+    if (
+      !isPointVisibleEnough(p1, rect, 80) &&
+      !isPointVisibleEnough(p2, rect, 80)
+    ) {
+      return true;
+    }
 
     ctx.beginPath();
     ctx.moveTo(p1.x, p1.y);
@@ -386,6 +440,9 @@ function createBikeAnimation(config) {
     tripCursor = 0;
     simTime = 0;
     lastTs = null;
+
+    const rect = canvas.getBoundingClientRect();
+    ctx.clearRect(0, 0, rect.width, rect.height);
   }
 
   function animate(ts) {
@@ -412,7 +469,8 @@ function createBikeAnimation(config) {
 
     updateClock();
 
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    const rect = canvas.getBoundingClientRect();
+    ctx.clearRect(0, 0, rect.width, rect.height);
 
     ripples = ripples.filter(drawRipple);
     activeTrips = activeTrips.filter(drawTrip);
@@ -421,12 +479,28 @@ function createBikeAnimation(config) {
   }
 
   Promise.all([
-    fetch(stationsFile).then(r => r.json()),
-    fetch(tripsFile).then(r => r.json())
-  ]).then(([stations, tripsData]) => {
-    trips = tripsData.sort((a, b) => Number(a.start_sec) - Number(b.start_sec));
+    fetch(stationsFile).then(r => {
+      if (!r.ok) throw new Error(`Could not load ${stationsFile}`);
+      return r.json();
+    }),
+    fetch(tripsFile).then(r => {
+      if (!r.ok) throw new Error(`Could not load ${tripsFile}`);
+      return r.json();
+    })
+  ])
+  .then(([stations, tripsData]) => {
     addStations(stations);
+
+    trips = tripsData
+      .filter(trip => Number.isFinite(Number(trip.start_sec)))
+      .sort((a, b) => Number(a.start_sec) - Number(b.start_sec));
+
+    updateClock();
     requestAnimationFrame(animate);
+  })
+  .catch(error => {
+    console.error(error);
+    clockEl.textContent = "Data error";
   });
 }
 
