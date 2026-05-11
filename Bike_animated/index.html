@@ -44,8 +44,8 @@
 
   .bike-map-wrap {
     position: relative;
-    height: 68vh;
-    min-height: 520px;
+    height: 48vh;
+    min-height: 360px;
   }
 
   .bike-map {
@@ -86,8 +86,8 @@
     }
 
     .bike-map-wrap {
-      height: 60vh;
-      min-height: 420px;
+      height: 46vh;
+      min-height: 340px;
     }
   }
 </style>
@@ -115,7 +115,7 @@
     <div class="section-heading">
       <h2>Animated Helsinki City Bike Trips</h2>
       <p class="section-note">
-        Comparison of central Helsinki bike trip activity during night-time and morning peak hours.
+        Comparison of central Helsinki bike trip activity across different times of day.
       </p>
     </div>
 
@@ -145,6 +145,30 @@
         </div>
       </article>
 
+      <article class="bike-panel">
+        <div class="bike-panel-header">
+          <h3>Afternoon activity</h3>
+          <p>Trips between 16:00 and 18:00</p>
+        </div>
+        <div class="bike-map-wrap">
+          <div id="map-afternoon" class="bike-map"></div>
+          <canvas id="canvas-afternoon" class="bike-canvas"></canvas>
+          <div id="clock-afternoon" class="bike-clock">16:00</div>
+        </div>
+      </article>
+
+      <article class="bike-panel">
+        <div class="bike-panel-header">
+          <h3>Evening activity</h3>
+          <p>Trips between 20:00 and 22:00</p>
+        </div>
+        <div class="bike-map-wrap">
+          <div id="map-evening" class="bike-map"></div>
+          <canvas id="canvas-evening" class="bike-canvas"></canvas>
+          <div id="clock-evening" class="bike-clock">20:00</div>
+        </div>
+      </article>
+
     </div>
   </section>
 </main>
@@ -164,8 +188,8 @@ function createBikeAnimation(config) {
   } = config;
 
   const bounds = L.latLngBounds(
-    [60.145, 24.89],
-    [60.195, 25.01]
+    [60.152, 24.905],
+    [60.188, 24.995]
   );
 
   const map = L.map(mapId, {
@@ -179,7 +203,7 @@ function createBikeAnimation(config) {
     preferCanvas: true
   });
 
-  map.fitBounds(bounds, { padding: [10, 10] });
+  map.fitBounds(bounds, { padding: [0, 0] });
 
   L.tileLayer(
     "https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png",
@@ -220,14 +244,9 @@ function createBikeAnimation(config) {
   }
 
   resizeCanvas();
+
   window.addEventListener("resize", resizeCanvas);
   map.on("resize zoomend moveend viewreset", resizeCanvas);
-
-  function formatClock(secondsFromStart) {
-    const total = startHour * 3600 + Math.floor(secondsFromStart);
-    const hh = String(Math.floor(total / 3600) % 24).padStart(2, "0");
-    const mm = String(Math.floor((total % 3600) / 60).padStart ? "" : "");
-  }
 
   function updateClock() {
     const total = startHour * 3600 + Math.floor(simTime);
@@ -285,7 +304,10 @@ function createBikeAnimation(config) {
       start_sec: Number(trip.start_sec),
       duration_sec: Math.max(
         minVisualDuration,
-        Math.min(maxVisualDuration, Number(trip.duration_sec || trip["Duration (sec.)"] || 300))
+        Math.min(
+          maxVisualDuration,
+          Number(trip.duration_sec || trip["Duration (sec.)"] || 300)
+        )
       )
     });
 
@@ -426,6 +448,26 @@ createBikeAnimation({
   tripsFile: "trips_central_7-9.json",
   startHour: 7,
   endHour: 9
+});
+
+createBikeAnimation({
+  mapId: "map-afternoon",
+  canvasId: "canvas-afternoon",
+  clockId: "clock-afternoon",
+  stationsFile: "stations_central_16-18.json",
+  tripsFile: "trips_central_16-18.json",
+  startHour: 16,
+  endHour: 18
+});
+
+createBikeAnimation({
+  mapId: "map-evening",
+  canvasId: "canvas-evening",
+  clockId: "clock-evening",
+  stationsFile: "stations_central_20-22.json",
+  tripsFile: "trips_central_20-22.json",
+  startHour: 20,
+  endHour: 22
 });
 </script>
 
