@@ -8,11 +8,26 @@
 
 <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script src="https://d3js.org/d3.v7.min.js"></script>
 
 <style>
-  body { margin: 0; font-family: sans-serif; }
-  #map { height: 90vh; }
-  .controls { padding: 10px; background: white; }
+  body {
+      margin: 0;
+      font-family: sans-serif;
+  }
+
+  #map {
+      height: 850px;
+  }
+
+  .controls {
+      padding: 10px;
+      background: white;
+  }
+
+  .leaflet-tile {
+      transform: translateZ(0) scale(1.001);
+  }
 </style>
 </head>
 
@@ -48,7 +63,7 @@
                 Hour:
                 <input type="range" id="hourSlider" min="0" max="23" value="9">
                 <span id="hourLabel">9</span>
-        
+
                 Day:
                 <select id="daySelect">
                     <option value="weekday">Weekday</option>
@@ -56,91 +71,109 @@
                     <option value="sunday">Sunday</option>
                 </select>
             </div>
-        
-            <div id="map" class="map-container">
-              <script>
-              
-              const map = L.map('map', {
-                  renderer: L.canvas()  // IMPORTANT for performance
-              }).setView([60.21, 25.01], 11);
-              
-              L.tileLayer(
-                "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
-                {
-                  attribution: '&copy; OpenStreetMap & CartoDB'
-                }
-              ).addTo(map);
-              
 
-              let geojsonLayer;
-              let geoData;
+            <div id="map" class="map-container"></div>
 
-              const colorScale = (value) => {
-                  if (value > 0.01760) return "#7f0000";
-                  if (value > 0.00866) return "#b30000";
-                  if (value > 0.00476) return "#d7301f";
-                  if (value > 0.00248) return "#ef3b2c";
-                  if (value > 0.00120) return "#fb6a4a";
-                  if (value > 0.00058) return "#fc9272";
-                  if (value > 0.00027) return "#fcbba1";
-                  if (value > 0.00013) return "#fee0d2";
-                  if (value > 0.00004) return "#fff5f0";
-                  return "#fffafa";
-              };
-              
-
-              fetch("helsinki_population.geojson")
-              .then(res => res.json())
-              .then(data => {
-                  geoData = data;
-                  drawLayer();
-              });
-              
-
-              function getValue(feature) {
-                  const hour = document.getElementById("hourSlider").value;
-                  const day = document.getElementById("daySelect").value;
-              
-                  if (feature.properties.day_type !== day) return 0;
-              
-                  return feature.properties["H" + hour] || 0;
-              }
-              
-              function style(feature) {
-                  const value = getValue(feature);
-              
-                  return {
-                      fillColor: colorScale(value),
-                      weight: 0,
-                      fillOpacity: 0.6
-                  };
-              }
-              
-
-              function drawLayer() {
-                  geojsonLayer = L.geoJSON(geoData, {
-                      style: style,
-                      renderer: L.canvas()
-                  }).addTo(map);
-              }
-              
-
-              function update() {
-                  document.getElementById("hourLabel").innerText =
-                      document.getElementById("hourSlider").value;
-              
-                  geojsonLayer.setStyle(style);
-              }
-              
-
-              document.getElementById("hourSlider").addEventListener("input", update);
-              document.getElementById("daySelect").addEventListener("change", update);
-              
-              </script>
-            </div>        
         </div>
     </section>
 </main>
+
+<script>
+
+const map = L.map('map', {
+    renderer: L.canvas(),
+    zoomSnap: 1,
+    zoomDelta: 1,
+    zoomAnimation: false,
+    fadeAnimation: false,
+    markerZoomAnimation: false
+}).setView([60.21, 25.01], 11);
+
+L.tileLayer(
+    "https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}.png",
+    {
+        attribution: '&copy; OpenStreetMap & CartoDB',
+        subdomains: "abcd",
+        maxZoom: 19
+    }
+).addTo(map);
+
+let geojsonLayer;
+let geoData;
+let colorScale;
+
+function buildColorScale() {
+    const values = [];
+
+    geoData.features.forEach(feature => {
+        for (let h = 0; h < 24; h++) {
+            const v = Number(feature.properties["H" + h]) || 0;
+            if (v > 0) values.push(v);
+        }
+    });
+
+    values.sort((a, b) => a - b);
+
+    const maxValue = d3.quantile(values, 0.98);
+
+    colorScale = d3.scaleSequential(
+        t => d3.interpolateInferno(0.05 + t * 0.95)
+    ).domain([0, maxValue]);
+}
+
+function getColor(value) {
+    if (!value || value <= 0) {
+        return "transparent";
+    }
+
+    return colorScale(value);
+}
+
+fetch("helsinki_population.geojson")
+.then(res => res.json())
+.then(data => {
+    geoData = data;
+    buildColorScale();
+    drawLayer();
+});
+
+function getValue(feature) {
+    const hour = document.getElementById("hourSlider").value;
+    const day = document.getElementById("daySelect").value;
+
+    if (feature.properties.day_type !== day) return 0;
+
+    return feature.properties["H" + hour] || 0;
+}
+
+function style(feature) {
+    const value = getValue(feature);
+
+    return {
+        fillColor: getColor(value),
+        weight: 0,
+        fillOpacity: value > 0 ? 0.95 : 0
+    };
+}
+
+function drawLayer() {
+    geojsonLayer = L.geoJSON(geoData, {
+        style: style,
+        renderer: L.canvas()
+    }).addTo(map);
+}
+
+function update() {
+    document.getElementById("hourLabel").innerText =
+        document.getElementById("hourSlider").value;
+
+    geojsonLayer.setStyle(style);
+}
+
+document.getElementById("hourSlider").addEventListener("input", update);
+document.getElementById("daySelect").addEventListener("change", update);
+
+</script>
 
 </body>
 </html>
