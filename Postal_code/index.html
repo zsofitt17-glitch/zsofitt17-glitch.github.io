@@ -1,102 +1,104 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Population Visualization</title>
-<link rel="stylesheet" href="../style.css">
-
-</head>
-
-<body>
-
-<header>
-    <div class="page">
-        <div class="topbar">
-            <a class="site-title" href="../index.html">Thesis Portfolio</a>
-            <nav>
-                <a href="../index.html#bike-data">Bike Data</a>
-                <a href="../index.html#population-data">Population</a>
-                <a href="../index.html#postal-code-data">Postal Code</a>
-            </nav>
-        </div>
+<section>
+    <div class="section-heading">
+        <h2>Heatmaps Based on Postal Code Data</h2>
     </div>
-</header>
 
-<main class="page">
+    <div class="intro">
+        <p>
+            The following heatmaps compare postal code level indicators using two different classification methods.
+            On the left, the maps use <strong>equal interval classification</strong>, where the full data range is divided
+            into equally sized intervals. On the right, the maps use <strong>quantile classification</strong>, where each
+            class contains approximately the same number of postal code areas.
+        </p>
+        <p>
+            This comparison helps show how the same data can appear differently depending on the classification method.
+        </p>
+    </div>
 
-    <section>
-        <div class="section-heading">
-            <h2>Heatmaps based on postal code data</h2>
-        </div>
+    <div class="comparison-header">
+        <div>Equal interval</div>
+        <div>Quantile</div>
+    </div>
 
-        <div class="card-grid">
+    <div class="heatmap-comparison-grid">
 
-            <figure>
-                <img src="population-ei.png" class="image-preview">
-                <figcaption></figcaption>
-            </figure>
-        
-            <figure>
-                <img src="population-q.png" class="image-preview">
-                <figcaption>Income distribution</figcaption>
-            </figure>
+        <article class="heatmap-pair">
+            <h3>Population</h3>
+            <div class="map-row">
+                <figure>
+                    <img src="population-ei.png" class="image-preview" alt="Population heatmap using equal interval classification">
+                </figure>
 
-            <figure>
-                <img src="workplaces-ei.png" class="image-preview">
-                <figcaption>Income distribution</figcaption>
-            </figure>
-        
-            <figure>
-                <img src="workplaces-q.png" class="image-preview">
-                <figcaption>Income distribution</figcaption>
-            </figure>
+                <figure>
+                    <img src="population-q.png" class="image-preview" alt="Population heatmap using quantile classification">
+                </figure>
+            </div>
+        </article>
 
-            <figure>
-                <img src="education-ei.png" class="image-preview">
-                <figcaption>Income distribution</figcaption>
-            </figure>
-        
-            <figure>
-                <img src="education-q.png" class="image-preview">
-                <figcaption>Income distribution</figcaption>
-            </figure>
+        <article class="heatmap-pair">
+            <h3>Workplaces</h3>
+            <div class="map-row">
+                <figure>
+                    <img src="workplaces-ei.png" class="image-preview" alt="Workplaces heatmap using equal interval classification">
+                </figure>
 
-            <figure>
-                <img src="dwellings-ei.png" class="image-preview">
-                <figcaption>Income distribution</figcaption>
-            </figure>
-        
-            <figure>
-                <img src="dwellings-q.png" class="image-preview">
-                <figcaption>Income distribution</figcaption>
-            </figure>
+                <figure>
+                    <img src="workplaces-q.png" class="image-preview" alt="Workplaces heatmap using quantile classification">
+                </figure>
+            </div>
+        </article>
 
-            <figure>
-                <img src="res_buildings-ei.png" class="image-preview">
-                <figcaption>Income distribution</figcaption>
-            </figure>
-        
-            <figure>
-                <img src="res_buildings-q.png" class="image-preview">
-                <figcaption>Income distribution</figcaption>
-            </figure>
+        <article class="heatmap-pair">
+            <h3>Education</h3>
+            <div class="map-row">
+                <figure>
+                    <img src="education-ei.png" class="image-preview" alt="Education heatmap using equal interval classification">
+                </figure>
 
-            <figure>
-                <img src="income-ei.png" class="image-preview">
-                <figcaption>Income distribution</figcaption>
-            </figure>
-        
-            <figure>
-                <img src="income-q.png" class="image-preview">
-                <figcaption>Income distribution</figcaption>
-            </figure>
-        
-        </div>
+                <figure>
+                    <img src="education-q.png" class="image-preview" alt="Education heatmap using quantile classification">
+                </figure>
+            </div>
+        </article>
 
-    </section>
+        <article class="heatmap-pair">
+            <h3>Dwellings</h3>
+            <div class="map-row">
+                <figure>
+                    <img src="dwellings-ei.png" class="image-preview" alt="Dwellings heatmap using equal interval classification">
+                </figure>
 
-</main>
+                <figure>
+                    <img src="dwellings-q.png" class="image-preview" alt="Dwellings heatmap using quantile classification">
+                </figure>
+            </div>
+        </article>
 
-</body>
-</html>
+        <article class="heatmap-pair">
+            <h3>Residential Buildings</h3>
+            <div class="map-row">
+                <figure>
+                    <img src="res_buildings-ei.png" class="image-preview" alt="Residential buildings heatmap using equal interval classification">
+                </figure>
+
+                <figure>
+                    <img src="res_buildings-q.png" class="image-preview" alt="Residential buildings heatmap using quantile classification">
+                </figure>
+            </div>
+        </article>
+
+        <article class="heatmap-pair">
+            <h3>Income</h3>
+            <div class="map-row">
+                <figure>
+                    <img src="income-ei.png" class="image-preview" alt="Income heatmap using equal interval classification">
+                </figure>
+
+                <figure>
+                    <img src="income-q.png" class="image-preview" alt="Income heatmap using quantile classification">
+                </figure>
+            </div>
+        </article>
+
+    </div>
+</section>
