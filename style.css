@@ -332,9 +332,18 @@ footer {
 }
 
 .heatmap-pair h3 {
-    margin: 0 0 14px;
-    font-size: 1.25rem;
+    width: fit-content;
+    margin: 0 auto 18px;
+    padding: 8px 18px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-bottom: 4px solid var(--accent);
+    border-radius: 999px;
     color: var(--accent-dark);
+    font-size: 1.15rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    text-align: center;
 }
 
 .heatmap-pair figure {
