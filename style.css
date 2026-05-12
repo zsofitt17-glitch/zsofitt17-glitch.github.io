@@ -350,6 +350,29 @@ footer {
     margin: 0;
 }
 
+.heatmap-pair {
+    margin-bottom: 42px;
+    padding-bottom: 26px;
+    border-bottom: 1px solid var(--border);
+}
+
+.heatmap-pair:last-child {
+    border-bottom: none;
+}
+
+.heatmap-pair figcaption {
+    margin-top: -6px;
+    text-align: center;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-muted);
+}
+
+.single-map {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
 @media (max-width: 800px) {
     .comparison-header {
         display: none;
