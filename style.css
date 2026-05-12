@@ -310,3 +310,77 @@ footer {
     border: 1px solid var(--border);
     border-radius: 14px;
 }
+
+.heatmap-comparison-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 36px;
+    margin-top: 20px;
+}
+
+.heatmap-pair {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: var(--shadow);
+}
+
+.heatmap-pair h3 {
+    margin: 0 0 16px;
+    font-size: 1.2rem;
+    color: var(--accent-dark);
+}
+
+.map-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.map-row figure {
+    margin: 0;
+}
+
+.comparison-header {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin: 28px 0 8px;
+}
+
+.comparison-header div {
+    background: var(--accent-dark);
+    color: #ffffff;
+    text-align: center;
+    font-weight: 700;
+    border-radius: 10px;
+    padding: 10px;
+}
+
+@media (max-width: 800px) {
+    .comparison-header {
+        display: none;
+    }
+
+    .map-row {
+        grid-template-columns: 1fr;
+    }
+
+    .map-row figure:first-child::before {
+        content: "Equal interval";
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 700;
+        color: var(--accent-dark);
+    }
+
+    .map-row figure:last-child::before {
+        content: "Quantile";
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 700;
+        color: var(--accent-dark);
+    }
+}
+
