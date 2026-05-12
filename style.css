@@ -373,6 +373,41 @@ footer {
     margin: 0 auto;
 }
 
+.population-time-grid {
+    display: grid;
+    grid-template-columns: 120px repeat(3, minmax(0, 1fr));
+    gap: 18px;
+    align-items: center;
+    margin-top: 28px;
+}
+
+.population-time-grid figure {
+    margin: 0;
+}
+
+.time-label, .day-label {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--accent-dark);
+    font-weight: 700;
+    text-align: center;
+    border-radius: 999px;
+    padding: 8px 14px;
+    box-shadow: var(--shadow);
+}
+
+.day-label {
+    justify-self: stretch;
+}
+
+.grid-corner {
+    height: 1px;
+}
+
+.population-time-grid .image-preview {
+    margin-bottom: 0;
+}
+
 @media (max-width: 800px) {
     .comparison-header {
         display: none;
@@ -393,6 +428,54 @@ footer {
         font-weight: 700;
         color: var(--accent-dark);
     }
-}
+    .population-time-grid {
+        display: block;
+    }
+
+    .grid-corner,
+    .time-label {
+        display: none;
+    }
+
+    .day-label {
+        margin: 28px 0 12px;
+    }
+
+    .population-time-grid figure {
+        margin-bottom: 16px;
+    }
+
+    .population-time-grid figure:nth-of-type(1)::before,
+    .population-time-grid figure:nth-of-type(4)::before,
+    .population-time-grid figure:nth-of-type(7)::before {
+        content: "09:00";
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 700;
+        color: var(--accent-dark);
+        text-align: center;
+    }
+
+    .population-time-grid figure:nth-of-type(2)::before,
+    .population-time-grid figure:nth-of-type(5)::before,
+    .population-time-grid figure:nth-of-type(8)::before {
+        content: "17:00";
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 700;
+        color: var(--accent-dark);
+        text-align: center;
+    }
+
+    .population-time-grid figure:nth-of-type(3)::before,
+    .population-time-grid figure:nth-of-type(6)::before,
+    .population-time-grid figure:nth-of-type(9)::before {
+        content: "01:00";
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 700;
+        color: var(--accent-dark);
+        text-align: center;
+    }
 }
 
