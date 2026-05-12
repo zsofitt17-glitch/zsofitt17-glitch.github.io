@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>Helsinki Bike Station Activity Bubble Map</title>
+
+<link rel="stylesheet" href="../style.css">
+
+<style>
+  body {
+      margin: 0;
+      font-family: sans-serif;
+  }
+
+  #map {
+      height: 850px;
+  }
+
+  .controls {
+      padding: 10px;
+      background: white;
+  }
+</style>
+</head>
+
+<body>
+
+<header>
+    <div class="page">
+        <div class="topbar">
+            <a class="site-title" href="../index.html">Thesis Portfolio</a>
+            <nav aria-label="Main navigation">
+                <a href="../index.html#about">About</a>
+                <a href="../index.html#bike-data">Bike Data</a>
+                <a href="../index.html#population-data">Population Distribution</a>
+                <a href="../index.html#postal-code-data">Postal Code Data</a>
+                <a href="../index.html#other-visualizations">Others</a>
+            </nav>
+        </div>
+    </div>
+</header>
+
+<main class="page">
+  <section>
+      <div class="section-heading">
+          <h2>Bike Station Activity</h2>
+          <p class="section-note">
+              Average daily bike station activity in Helsinki and Vantaa during the 2023 bike season.
+          </p>
+      </div>
+  
+      <div class="visualization-frame">
+          <iframe
+              src="interactive_bubble_map_station_activity.html"
+              width="100%"
+              height="1000"
+              frameborder="0"
+              style="border:none; border-radius:12px;">
+          </iframe>
+      </div>
+  </section>
+
+</body>
+</html>
