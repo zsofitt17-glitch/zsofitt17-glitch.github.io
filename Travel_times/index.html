@@ -27,18 +27,86 @@
 
     <section>
         <div class="section-heading">
-            <h2>Heatmaps based on travel time data</h2>
+            <h2>Heatmaps Based on Travel Time Data</h2>
         </div>
-
-        <div class="card-grid">
-                <img src="travetime-car-r-v2.png" class="image-preview">
-                <img src="travetime-car-n.png" class="image-preview">
-                <img src="travetime-bike-s.png" class="image-preview">           
-                <img src="travetime-bike-f.png" class="image-preview">
-                <img src="travetime-public-r.png" class="image-preview">
-                <img src="travetime-public-n.png" class="image-preview">        
+    
+        <div class="intro">
+            <p>
+                The following heatmaps show travel times from a selected grid cell in central Helsinki.
+                Each map visualizes accessibility as a heatmap, where travel times are grouped into classes.
+            </p>
+            <p>
+                The car travel time maps use broader class intervals, while the public transport and cycling
+                maps are based on the same class intervals to make them easier to compare with each other.
+            </p>
         </div>
-
+    
+        <article class="heatmap-pair">
+            <h3>Car Travel Time</h3>
+            <div class="card-grid">
+                <figure>
+                    <img src="traveltimes_car-r-v2.png" class="image-preview" alt="Car travel time heatmap during rush hour">
+                    <figcaption>Rush hour</figcaption>
+                </figure>
+    
+                <figure>
+                    <img src="traveltimes_car-n.png" class="image-preview" alt="Car travel time heatmap at night">
+                    <figcaption>Night</figcaption>
+                </figure>
+            </div>
+        </article>
+    
+        <article class="heatmap-pair">
+            <h3>Cycling Travel Time</h3>
+            <div class="card-grid">
+                <figure>
+                    <img src="traveltimes_bike-s.png" class="image-preview" alt="Cycling travel time heatmap with slower cycling speed">
+                    <figcaption>Slow cycling speed</figcaption>
+                </figure>
+    
+                <figure>
+                    <img src="traveltimes_bike-f.png" class="image-preview" alt="Cycling travel time heatmap with faster cycling speed">
+                    <figcaption>Fast cycling speed</figcaption>
+                </figure>
+            </div>
+        </article>
+    
+        <article class="heatmap-pair">
+            <h3>Public Transport Travel Time</h3>
+            <div class="card-grid">
+                <figure>
+                    <img src="traveltimes_public-r.png" class="image-preview" alt="Public transport travel time heatmap during rush hour">
+                    <figcaption>Rush hour</figcaption>
+                </figure>
+    
+                <figure>
+                    <img src="traveltimes_public-n.png" class="image-preview" alt="Public transport travel time heatmap at night">
+                    <figcaption>Night</figcaption>
+                </figure>
+            </div>
+        </article>
+    </section>
+    
+    <section>
+        <div class="section-heading">
+            <h2>Travel Times with Public Transport Network Overlay</h2>
+        </div>
+    
+        <div class="intro">
+            <p>
+                The map below shows the public transport travel time heatmap for rush hour together with
+                the public transport network overlaid on top. This makes it easier to compare the travel
+                time pattern with the structure of the network.
+            </p>
+        </div>
+    
+        <article class="heatmap-pair">
+            <h3>Public Transport Rush Hour with Network Overlay</h3>
+            <figure class="single-map">
+                <img src="With_public-transport_lines.png" class="image-preview" alt="Public transport rush hour travel time heatmap with public transport lines">
+                <figcaption>Public transport rush hour travel times with public transport lines overlaid.</figcaption>
+            </figure>
+        </article>
     </section>
 
 </main>
