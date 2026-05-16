@@ -114,11 +114,23 @@
   <section>
     <div class="section-heading">
       <h2>Animated Helsinki City Bike Trips</h2>
-      <p class="section-note">
-        Comparison of central Helsinki bike trip activity across different times of day.
-      </p>
     </div>
 
+    <div class="intro">
+        <p>
+          This visualization presents animated Helsinki city bike trips within central Helsinki during four selected time periods: 00:00–02:00, 07:00–09:00, 16:00–18:00, and 20:00–22:00. 
+          The selected intervals represent different levels of urban activity, from low night-time movement to more concentrated commuting periods during the morning and afternoon peaks.
+        </p>
+        <p>
+          The small diamond symbols represent city bike stations, while the glowing moving points show active bike trips between stations. 
+          Circular ripple effects appear whenever a trip starts or ends at a station, and the fixed-length purple trail behind each point is used to indicate the current direction of movement of the animated trip.
+        </p>
+        <p>
+          To improve readability, the visualization focuses only on a limited central area of Helsinki instead of the full city bike network. 
+          Earlier versions covering the entire city became visually overcrowded because of the large number of simultaneously animated trips.
+        </p>
+    </div>
+    
     <div class="bike-comparison-grid">
 
       <article class="bike-panel">
@@ -385,18 +397,30 @@ function createBikeAnimation(config) {
       return false;
     }
 
-    const t1 = Math.max(0, progress - 0.08);
     const t2 = progress;
-
-    const p1 = map.latLngToContainerPoint([
-      lerp(trip.lat1, trip.lat2, t1),
-      lerp(trip.lon1, trip.lon2, t1)
-    ]);
-
-    const p2 = map.latLngToContainerPoint([
-      lerp(trip.lat1, trip.lat2, t2),
-      lerp(trip.lon1, trip.lon2, t2)
-    ]);
+    
+    const currentLat = lerp(trip.lat1, trip.lat2, t2);
+    const currentLon = lerp(trip.lon1, trip.lon2, t2);
+    
+    const p2 = map.latLngToContainerPoint([currentLat, currentLon]);
+    
+    const startPoint = map.latLngToContainerPoint([trip.lat1, trip.lon1]);
+    const endPoint = map.latLngToContainerPoint([trip.lat2, trip.lon2]);
+    
+    const dx = endPoint.x - startPoint.x;
+    const dy = endPoint.y - startPoint.y;
+    
+    const length = Math.sqrt(dx * dx + dy * dy);
+    
+    const ux = dx / length;
+    const uy = dy / length;
+    
+    const TRAIL_LENGTH = 14;
+    
+    const p1 = {
+      x: p2.x - ux * TRAIL_LENGTH,
+      y: p2.y - uy * TRAIL_LENGTH
+    };
 
     const rect = canvas.getBoundingClientRect();
 
