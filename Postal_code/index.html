@@ -29,19 +29,20 @@
         <div class="section-heading">
             <h2>Heatmaps Based on Postal Code Data</h2>
         </div>
-    
+
         <div class="intro">
             <p>
-                The following heatmaps compare postal code level indicators using two different classification methods.
-                The image on the left shows the <strong>equal interval</strong> version, while the image on the right shows
+                The following heatmaps present postal-code-level indicators using two different classification methods.
+                The image on the left shows the <strong>equal interval</strong> version, while the image on the right displays
                 the <strong>quantile</strong> version.
             </p>
             <p>
-                Equal interval classification divides the full data range into equally sized value intervals.
-                Quantile classification places approximately the same number of postal code areas into each class.
+                The visualizations include indicators related to residential buildings, dwellings, population, and other selected variables.
+                Equal interval classification divides the complete data range into equally sized value intervals, while quantile classification places approximately the same number of postal-code areas into each class,
+                making relative spatial differences easier to compare.
             </p>
         </div>
-    
+
         <div class="comparison-header">
             <div>Equal interval</div>
             <div>Quantile</div>
@@ -114,6 +115,20 @@
     
         <article class="heatmap-pair">
             <h3>Income</h3>
+            
+            <div class="intro">
+                <p>
+                    During the preparation of the median household income visualization, one postal-code area,
+                    <strong>00230 Helsinki postikeskus (Helsinki)</strong>, produced a significant outlier in the dataset.
+                    The area contains no residential dwellings and no education-sector jobs, and therefore the recorded median income value was zero.
+                </p>
+                <p>
+                    Based on the spatial data and map interpretation, the area appears to consist primarily of railway-related infrastructure and surrounding green areas rather than residential land use.
+                    Because the zero value strongly distorted the data classification, especially in the equal interval version, the area was excluded from the final median income visualization.
+                    The excluded postal-code area is highlighted in red.
+                </p>
+            </div>
+
             <div class="card-grid">
                 <figure>
                     <img src="income-ei.png" class="image-preview" alt="Income heatmap using equal interval classification">
