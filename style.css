@@ -368,7 +368,7 @@ footer {
     margin-right: auto;
 }
 
-.heatmap-pair h3, h3 {
+.heatmap-pair h3 {
     width: fit-content;
     margin: 28px auto 22px;
     padding: 18px 18px;
@@ -381,11 +381,6 @@ footer {
     font-weight: 700;
     letter-spacing: 0.03em;
     text-align: center;
-}
-
-.single-map h3 {
-    margin-top: 28px;
-    margin-bottom: 22px;
 }
 
 .population-time-grid {
