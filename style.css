@@ -130,6 +130,7 @@ section {
     justify-content: space-between;
     align-items: end;
     gap: 24px;
+    margint-top:22px;
     margin-bottom: 22px;
     border-bottom: 1px solid var(--border);
     padding-bottom: 12px;
@@ -334,7 +335,7 @@ footer {
 .heatmap-pair h3 {
     width: fit-content;
     margin: 0 auto 18px;
-    padding: 8px 18px;
+    padding: 18px 18px;
     background: var(--surface);
     border: 1px solid var(--border);
     border-bottom: 4px solid var(--accent);
@@ -371,6 +372,7 @@ footer {
 .single-map {
     max-width: 900px;
     margin: 0 auto;
+    align-items: center;
 }
 
 .population-time-grid {
