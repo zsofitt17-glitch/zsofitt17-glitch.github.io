@@ -147,7 +147,7 @@ h2 {
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: 16px;
-    padding: 28px;
+    padding: 12px;
     box-shadow: var(--shadow);
     margin-top: 10px;
     margin-bottom: 10px;
@@ -157,6 +157,7 @@ h2 {
     max-width: 850px;
     margin: 0 0 14px;
     color: var(--text-muted);
+    text-align: justify;
 }
 
 .intro p:last-child {
