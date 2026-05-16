@@ -142,6 +142,44 @@ h2 {
     color: var(--accent-dark);
 }
 
+header .site-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--accent-dark);
+    text-decoration: none;
+}
+
+header nav a {
+    font-size: 0.95rem;
+    color: var(--text-muted);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+header nav a:hover {
+    color: var(--accent-dark);
+    text-decoration: underline;
+}
+
+.section-heading h2 {
+    margin: 0;
+    font-size: 1.6rem;
+    color: var(--accent-dark);
+    font-weight: 700;
+}
+
+.section-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+    gap: 24px;
+    margin-top: 56px;
+    margin-bottom: 28px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 12px;
+}
 
 .intro {
     background: var(--surface);
