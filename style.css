@@ -346,7 +346,7 @@ footer {
     border-bottom: none;
 }
 
-.heatmap-pair figcaption {
+.heatmap-pair figcaption, figcaption {
     margin-top: -6px;
     text-align: center;
     font-size: 0.95rem;
@@ -368,7 +368,7 @@ footer {
     margin-right: auto;
 }
 
-.heatmap-pair h3 {
+.heatmap-pair h3, h3 {
     width: fit-content;
     margin: 28px auto 22px;
     padding: 18px 18px;
