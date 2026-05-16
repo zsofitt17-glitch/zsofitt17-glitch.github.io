@@ -209,7 +209,7 @@ header nav a:hover {
 }
 
 .intro p {
-    max-width: 850px;
+    width: 100%;
     margin: 0 0 14px;
     color: var(--text-muted);
     text-align: justify;
