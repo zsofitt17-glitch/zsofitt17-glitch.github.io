@@ -153,17 +153,7 @@ h2 {
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: 16px;
-    padding: 12px;
-    box-shadow: var(--shadow);
-    margin-top: 10px;
-    margin-bottom: 10px;
-}
-
-.intro-main {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 28px;
+    padding: 18px;
     box-shadow: var(--shadow);
     margin-top: 10px;
     margin-bottom: 10px;
