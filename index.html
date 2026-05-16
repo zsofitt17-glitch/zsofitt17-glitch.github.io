@@ -14,10 +14,9 @@
                 <a class="site-title" href="#top">Thesis Portfolio</a>
                 <nav aria-label="Main navigation">
                     <a href="#about">About</a>
-                    <a href="#bike-data">Bike Data</a>
-                    <a href="#population-data">Population Distribution</a>
-                    <a href="#postal-code-data">Postal Code Data</a>
-                    <a href="#other-visualizations">Others</a>
+                    <a href="#urban-structure">Urban Structure</a>
+                    <a href="#urban-dynamics">Urban Dynamics</a>
+                    <a href="#additional-perspectives">Additional Perspectives</a>
                 </nav>
             </div>
         </div>
@@ -29,13 +28,13 @@
                 <div>
                     <h1>Geospatial Data Visualization Thesis Portfolio</h1>
                     <p class="subtitle">
-                        A collection of interactive and static visualizations developed for my thesis, focusing on spatial patterns, population distribution, bike-related data, and postal-code-based analysis.
+                        A collection of interactive, static and animated visualizations developed for my thesis, telling the story of Helsinki through urban structure, daily dynamics, and additional accessibility and environmental perspectives.
                     </p>
                 </div>
 
                 <aside class="meta-card" aria-label="Thesis information">
                     <p><strong>Author:</strong> Zsófia Tasnádi-Tulogdi</p>
-                    <p><strong>Supervisor</strong> Gergő Pintér</p>
+                    <p><strong>Supervisor:</strong> Gergő Pintér</p>
                     <p><strong>Institution:</strong> Corvinus University of Budapest</p>
                     <p><strong>Thesis year:</strong> 2026</p>
                 </aside>
@@ -51,77 +50,67 @@
 
             <div class="intro">
                 <p>
-                    This website presents the visual outputs of my thesis project. The aim is to communicate geospatial patterns through a combination of interactive web maps, static figures, and data-driven visual summaries.
+                    This website presents the visual outputs of my thesis project. The aim is to communicate Helsinki through data, not only as a set of maps or numbers, but as a city with structure, movement, and rhythm.
                 </p>
             </div>
         </section>
 
-        <section id="bike-data">
+        <section id="urban-structure">
             <div class="section-heading">
-                <h2>Bike Data</h2>
-                <p class="section-note">Visualizations related to city bike infrastructure and bike usage.</p>
+                <h2>Urban Structure</h2>
+                <p class="section-note">The basic spatial layer of Helsinki: postal-code-based patterns and city bike activity concentrations.</p>
             </div>
 
             <div class="card-grid">
                 <article class="card">
-                    <h3>Bike Visualization 1</h3>
-                    <p>Description</p>
+                    <h3>Postal Code Interactive Visualization</h3>
+                    <p>Interactive postal-code-based visualization showing urban structure through variables such as dwellings, workplaces, income, and education-sector jobs.</p>
                     <div class="tag-row">
                         <span class="tag">Interactive HTML</span>
-                        <span class="tag">Map</span>
+                        <span class="tag">Postal Code Data</span>
                     </div>
                     <div class="button-row">
-                        <a href="Bike_animated/" class="btn">Open Visualization</a>
+                        <a href="Postal_interactive/" class="btn">Open Visualization</a>
                     </div>
                 </article>
 
                 <article class="card">
-                    <h3>Bike Visualization 2</h3>
-                    <p>Description</p>
+                    <h3>Postal Code Static Maps</h3>
+                    <p>Static postal-code maps that help compare how different urban functions are distributed across central and outer areas of Helsinki.</p>
                     <div class="tag-row">
                         <span class="tag">Static Image</span>
+                        <span class="tag">Postal Code Data</span>
                     </div>
                     <div class="button-row">
-                        <a href="Bike_clock/" class="btn">View Image</a>
+                        <a href="Postal_code/" class="btn">View Images</a>
                     </div>
                 </article>
 
                 <article class="card">
-                    <h3>Bike Visualization 3</h3>
-                    <p>Flowmap showing the trips from 2023 May. </p>
+                    <h3>City Bike Bubble Map</h3>
+                    <p>Bubble map showing average daily departures, arrivals, and total activity at city bike stations, highlighting the strongest concentrations of bike-sharing use.</p>
                     <div class="tag-row">
                         <span class="tag">Interactive</span>
                         <span class="tag">Map</span>
+                        <span class="tag">Bike Data</span>
                     </div>
                     <div class="button-row">
-                        <a href="Bike_flowmap/" class="btn">Open visualization</a>
-                    </div>
-                </article>
-
-                <article class="card">
-                    <h3>Bike Visualization 4</h3>
-                    <p>Bubble map</p>
-                    <div class="tag-row">
-                        <span class="tag">Interactive</span>
-                        <span class="tag">Map</span>
-                    </div>
-                    <div class="button-row">
-                        <a href="Bike_bubble/" class="btn">Open visualization</a>
+                        <a href="Bike_bubble/" class="btn">Open Visualization</a>
                     </div>
                 </article>
             </div>
         </section>
 
-        <section id="population-data">
+        <section id="urban-dynamics">
             <div class="section-heading">
-                <h2>Population Distribution Data</h2>
-                <p class="section-note">Population-related spatial analyses, population distribution data, movement throughout the day.</p>
+                <h2>Urban Dynamics</h2>
+                <p class="section-note">The daily rhythm of Helsinki: population redistribution and bicycle movement patterns throughout the day.</p>
             </div>
 
             <div class="card-grid">
                 <article class="card">
-                    <h3>Interactive Population Visualization</h3>
-                    <p>An interactive map built using GeoJSON and web mapping technologies to explore spatial population patterns.</p>
+                    <h3>Interactive Population Distribution</h3>
+                    <p>Interactive map for exploring how population distribution changes throughout the day and how patterns differ between weekdays and weekends.</p>
                     <div class="tag-row">
                         <span class="tag">Interactive HTML</span>
                         <span class="tag">GeoJSON</span>
@@ -132,61 +121,70 @@
                 </article>
 
                 <article class="card">
-                    <h3>Population Static Figure</h3>
-                    <p>A static visualization of the interactive version.</p>
+                    <h3>Population Distribution Static Figures</h3>
+                    <p>Static comparison figures showing selected moments of Helsinki's population distribution, making daily differences easier to compare side by side.</p>
                     <div class="tag-row">
                         <span class="tag">Static Image</span>
+                        <span class="tag">Population Data</span>
                     </div>
                     <div class="button-row">
                         <a href="Population_distribution_static/" class="btn">View Images</a>
                     </div>
                 </article>
-            </div>
-        </section>
 
-        <section id="postal-code-data">
-            <div class="section-heading">
-                <h2>Postal Code Based Data</h2>
-                <p class="section-note">Visualizations based on postal-code regions.</p>
-            </div>
-
-            <div class="card-grid">
                 <article class="card">
-                    <h3>Postal Code Visualization 1</h3>
-                    <p>Description</p>
+                    <h3>City Bike Trip Animation</h3>
+                    <p>Animated visualization showing how city bike trips change during the day and which hours are most active.</p>
                     <div class="tag-row">
                         <span class="tag">Interactive HTML</span>
+                        <span class="tag">Animation</span>
+                        <span class="tag">Bike Data</span>
                     </div>
                     <div class="button-row">
-                        <a href="Postal_interactive/" class="btn">Open Visualization</a>
+                        <a href="Bike_animated/" class="btn">Open Visualization</a>
                     </div>
                 </article>
 
                 <article class="card">
-                    <h3>Postal Code Static Map</h3>
-                    <p>Description</p>
+                    <h3>Hourly City Bike Activity</h3>
+                    <p>Artistic hourly visualization of city bike activity, showing morning and afternoon peaks in the daily cycling rhythm.</p>
                     <div class="tag-row">
                         <span class="tag">Static Image</span>
+                        <span class="tag">Bike Data</span>
                     </div>
                     <div class="button-row">
-                        <a href="Postal_code/" class="btn">View Images</a>
+                        <a href="Bike_clock/" class="btn">View Image</a>
+                    </div>
+                </article>
+
+                <article class="card">
+                    <h3>City Bike Flow Map</h3>
+                    <p>Flow map showing city bike origin–destination trips, highlighting movement between bike stations.</p>
+                    <div class="tag-row">
+                        <span class="tag">Interactive</span>
+                        <span class="tag">Map</span>
+                        <span class="tag">Bike Data</span>
+                    </div>
+                    <div class="button-row">
+                        <a href="Bike_flowmap/" class="btn">Open Visualization</a>
                     </div>
                 </article>
             </div>
         </section>
 
-        <section id="other-visualizations">
+        <section id="additional-perspectives">
             <div class="section-heading">
-                <h2>Other Visualizations</h2>
-                <p class="section-note">Additional figures, experimental visualizations.</p>
+                <h2>Additional Perspectives</h2>
+                <p class="section-note">Extra views that extend the knowledge about hte city through accessibility and environmental context.</p>
             </div>
 
             <div class="card-grid">
                 <article class="card">
-                    <h3>Travel time heatmaps</h3>
-                    <p>Description</p>
+                    <h3>Travel Time Heatmaps</h3>
+                    <p>Static heatmaps comparing travel times from a selected central Helsinki grid cell to other parts of the region by public transport, cycling, and car travel.</p>
                     <div class="tag-row">
                         <span class="tag">Static Image</span>
+                        <span class="tag">Accessibility</span>
                     </div>
                     <div class="button-row">
                         <a href="Travel_times/" class="btn">View Images</a>
@@ -194,10 +192,11 @@
                 </article>
 
                 <article class="card">
-                    <h3>Electricity production</h3>
-                    <p>Description</p>
+                    <h3>Wind Energy Production</h3>
+                    <p>Visualization connecting wind electricity production with weather variables, adding an environmental perspective beyond the city-scale maps.</p>
                     <div class="tag-row">
                         <span class="tag">Static Image</span>
+                        <span class="tag">Energy</span>
                     </div>
                     <div class="button-row">
                         <a href="Energy/" class="btn">View Images</a>
